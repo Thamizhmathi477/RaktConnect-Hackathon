@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🩸 RaktConnect — AI Blood Donor Network</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>🩸 <span>RaktConnect</span></h1>
+            <p class="tagline">AI Emergency Blood &amp; Organ Donor Network</p>
+            <p class="sub-tagline">"Saving Lives Through Intelligent Donor Matching"</p>
+            <div class="header-badges">
+                <span class="badge">🏆 CodeStorm 2026</span>
+                <span class="badge">🤖 AI-Powered</span>
+                <span class="badge">🩸 Social Impact</span>
+            </div>
+        </div>
+    </header>
+
+    <nav class="navbar">
+        <div class="container">
+            <ul>
+                <li><a href="#problem">Problem</a></li>
+                <li><a href="#solution">Solution</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#demo">Live Demo</a></li>
+                <li><a href="#team">Team</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section id="problem" class="section">
+        <div class="container">
+            <div class="card">
+                <h2>🚨 The Problem</h2>
+                <p><strong>Every minute matters during a medical emergency.</strong></p>
+                <div class="problem-grid">
+                    <div class="problem-item">⏳ Manual phone calls to find donors</div>
+                    <div class="problem-item">📱 WhatsApp forwards with no guarantee</div>
+                    <div class="problem-item">🏥 Hospitals working in silos</div>
+                    <div class="problem-item">🚜 Rural areas with no donor access</div>
+                </div>
+                <p style="margin-top:15px;font-weight:600;color:#d7263d;">Result: Delayed treatment, preventable deaths.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="solution" class="section">
+        <div class="container">
+            <div class="card">
+                <h2>💡 Our Solution</h2>
+                <p>RaktConnect uses <strong>AI-powered matching</strong> to instantly connect patients with compatible donors.</p>
+                <div class="solution-grid">
+                    <div class="solution-item"><span class="icon">🩸</span><h3>AI Donor Matching</h3><p>Real medical compatibility rules</p></div>
+                    <div class="solution-item"><span class="icon">📍</span><h3>Nearest Donor</h3><p>Geolocation-based search</p></div>
+                    <div class="solution-item"><span class="icon">🚨</span><h3>Emergency Priority</h3><p>Critical cases get priority</p></div>
+                    <div class="solution-item"><span class="icon">📊</span><h3>Smart Ranking</h3><p>Distance + urgency combined</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="section">
+        <div class="container">
+            <div class="card">
+                <h2>🧠 AI Features</h2>
+                <ul class="feature-list">
+                    <li>✅ <strong>Compatibility Engine</strong> — 8 blood groups with correct cross-matching</li>
+                    <li>✅ <strong>Geospatial Matching</strong> — Haversine distance calculation</li>
+                    <li>✅ <strong>Priority Scoring</strong> — Combines proximity + urgency</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="demo" class="section">
+        <div class="container">
+            <div class="card">
+                <h2>🔬 Live Demo</h2>
+                <div class="demo-form">
+                    <form id="demoForm">
+                        <div class="form-group">
+                            <label>👤 Patient Name</label>
+                            <input type="text" id="patientName" value="Rajesh Kumar" />
+                        </div>
+                        <div class="form-group">
+                            <label>🩸 Blood Group</label>
+                            <select id="bloodGroup">
+                                <option value="O+" selected>O+</option>
+                                <option value="A+">A+</option>
+                                <option value="B+">B+</option>
+                                <option value="AB+">AB+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>📍 City</label>
+                            <select id="city">
+                                <option value="Delhi" selected>Delhi</option>
+                                <option value="Mumbai">Mumbai</option>
+                                <option value="Chennai">Chennai</option>
+                                <option value="Bangalore">Bangalore</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>🚨 Urgency</label>
+                            <select id="urgency">
+                                <option value="critical" selected>Critical</option>
+                                <option value="urgent">Urgent</option>
+                                <option value="normal">Normal</option>
+                            </select>
+                        </div>
+                        <button type="submit">🔍 Find Donors Now</button>
+                    </form>
+                    <div id="demoResult" style="display:none;margin-top:20px;padding:20px;background:#e8f5e9;border-radius:10px;">
+                        <h3 style="color:#2e7d32;">✅ Donors Found!</h3>
+                        <div id="donorList"></div>
+                    </div>
+                    <div id="demoError" style="display:none;margin-top:20px;padding:20px;background:#ffebee;border-radius:10px;">
+                        <h3 style="color:#c62828;">❌ No Donors Found</h3>
+                        <p>🚨 Escalating to hospital network...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="team" class="section">
+        <div class="container">
+            <div class="card">
+                <h2>👨‍💻 Team</h2>
+                <div class="team-grid">
+                    <div class="team-member"><h3>Thamizhmathi S</h3><p>AI/ML Developer</p></div>
+                    <div class="team-member"><h3>Swathi</h3><p>Full Stack Developer</p></div>
+                    <div class="team-member"><h3>Tharun</h3><p>UI/UX & Frontend</p></div>
+                </div>
+                <p style="text-align:center;margin-top:15px;">🏆 <strong>CodeStorm 2026 — FutureForge</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>🩸 RaktConnect — Saving Lives Through Intelligent Donor Matching</p>
+            <p style="font-size:0.9rem;margin-top:5px;">© 2026 Team RaktConnect | CodeStorm 2026</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
