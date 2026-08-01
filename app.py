@@ -1,5 +1,5 @@
 # ============================================
-# 🩸 RAKTCONNECT — Professional Streamlit App
+# 🩸 RAKTCONNECT — Professional App (FULLY VISIBLE)
 # CodeStorm 2026 — FutureForge
 # ============================================
 
@@ -21,53 +21,217 @@ st.set_page_config(
 )
 
 # ============================================
-# CUSTOM CSS
+# CUSTOM CSS — BIGGER & CLEARER
 # ============================================
 
 st.markdown("""
 <style>
-    .stApp { background-color: #f8f9fa; }
+    /* Main Background */
+    .stApp {
+        background-color: #ffffff;
+    }
+    
+    /* Header */
     .header {
-        background: linear-gradient(135deg, #d7263d, #a71d2a);
-        padding: 25px 30px;
-        border-radius: 15px;
+        background: linear-gradient(135deg, #c0392b, #e74c3c);
+        padding: 30px 20px;
+        border-radius: 12px;
         text-align: center;
         margin-bottom: 20px;
-        box-shadow: 0 4px 20px rgba(215, 38, 61, 0.3);
+        border: 2px solid #a93226;
     }
-    .header h1 { color: white; font-size: 2.8rem; font-weight: 800; margin: 0; }
-    .header h1 span { background: white; color: #d7263d; padding: 0 15px; border-radius: 10px; }
-    .header p { color: white; font-size: 1.2rem; opacity: 0.9; margin: 5px 0 0; }
-    .header .sub { color: white; font-size: 1rem; opacity: 0.7; font-style: italic; }
+    .header h1 {
+        color: white;
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin: 0;
+    }
+    .header h1 span {
+        background: white;
+        color: #c0392b;
+        padding: 0 15px;
+        border-radius: 10px;
+    }
+    .header p {
+        color: white;
+        font-size: 1.1rem;
+        opacity: 0.95;
+        margin: 5px 0 0;
+    }
+    .header .sub {
+        color: #f5b7b1;
+        font-size: 0.95rem;
+        font-style: italic;
+    }
     
-    .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 15px; border: 1px solid #eee; }
-    .card h3 { color: #d7263d; margin-bottom: 10px; font-size: 1.1rem; }
+    /* Cards */
+    .card {
+        background: #ffffff;
+        padding: 18px 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        margin-bottom: 15px;
+        border: 1px solid #e0e0e0;
+    }
+    .card h3 {
+        color: #c0392b;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
     
-    .stat-box { background: white; padding: 15px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #eee; }
-    .stat-box .number { font-size: 2rem; font-weight: 800; color: #d7263d; }
-    .stat-box .label { font-size: 0.8rem; color: #888; margin-top: 2px; }
+    /* Stats */
+    .stat-box {
+        background: #ffffff;
+        padding: 12px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border: 1px solid #e0e0e0;
+    }
+    .stat-box .number {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #c0392b;
+    }
+    .stat-box .label {
+        font-size: 0.85rem;
+        color: #555;
+        margin-top: 2px;
+        font-weight: 600;
+    }
     
-    .donor-card { background: #f8f9fa; padding: 12px 15px; border-radius: 10px; border-left: 4px solid #d7263d; margin: 8px 0; transition: transform 0.2s; }
-    .donor-card:hover { transform: translateX(5px); }
-    .donor-card .rank { font-weight: 800; color: #d7263d; font-size: 1.1rem; }
-    .donor-card .name { font-weight: 600; font-size: 1rem; }
-    .donor-card .details { font-size: 0.85rem; color: #666; }
-    .donor-card .distance { font-weight: 700; color: #2e7d32; }
+    /* Donor Cards */
+    .donor-card {
+        background: #f8f9fa;
+        padding: 12px 15px;
+        border-radius: 8px;
+        border-left: 5px solid #c0392b;
+        margin: 6px 0;
+    }
+    .donor-card .rank {
+        font-weight: 800;
+        color: #c0392b;
+        font-size: 1.2rem;
+    }
+    .donor-card .name {
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: #1a1a2e;
+    }
+    .donor-card .details {
+        font-size: 0.9rem;
+        color: #444;
+    }
+    .donor-card .distance {
+        font-weight: 700;
+        color: #27ae60;
+        font-size: 1.1rem;
+    }
     
-    .best-match { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 15px 20px; border-radius: 12px; border-left: 5px solid #2e7d32; margin-top: 10px; }
-    .best-match h4 { color: #2e7d32; margin: 0; }
-    .best-match p { margin: 2px 0; color: #1b5e20; }
+    /* Best Match */
+    .best-match {
+        background: linear-gradient(135deg, #d5f5e3, #a9dfbf);
+        padding: 15px 20px;
+        border-radius: 12px;
+        border-left: 6px solid #27ae60;
+        margin-top: 10px;
+    }
+    .best-match h4 {
+        color: #1a6e34;
+        margin: 0;
+        font-size: 1.2rem;
+    }
+    .best-match p {
+        margin: 3px 0;
+        color: #1a4a2a;
+        font-size: 0.95rem;
+    }
     
-    .stButton button { background: #d7263d !important; color: white !important; font-weight: 700 !important; border-radius: 8px !important; padding: 10px 30px !important; border: none !important; transition: all 0.3s !important; }
-    .stButton button:hover { background: #a71d2a !important; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(215, 38, 61, 0.4); }
+    /* Buttons */
+    .stButton button {
+        background: #c0392b !important;
+        color: white !important;
+        font-weight: 700 !important;
+        font-size: 1.1rem !important;
+        border-radius: 8px !important;
+        padding: 12px 30px !important;
+        border: none !important;
+        width: 100% !important;
+    }
+    .stButton button:hover {
+        background: #922b21 !important;
+        box-shadow: 0 4px 15px rgba(192, 57, 43, 0.4);
+    }
     
-    .footer { text-align: center; padding: 15px; color: #888; font-size: 0.85rem; border-top: 1px solid #eee; margin-top: 20px; }
-    .footer strong { color: #d7263d; }
+    /* Sidebar */
+    .css-1d391kg {
+        background-color: #f8f9fa;
+    }
+    .sidebar-content {
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+    }
     
-    .badge { display: inline-block; background: #f1f2f6; padding: 2px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin: 2px; }
-    .badge-red { background: #ffebee; color: #c62828; }
-    .badge-green { background: #e8f5e9; color: #2e7d32; }
-    .badge-blue { background: #e3f2fd; color: #0d47a1; }
+    /* Footer */
+    .footer {
+        text-align: center;
+        padding: 15px;
+        color: #666;
+        font-size: 0.9rem;
+        border-top: 2px solid #e0e0e0;
+        margin-top: 25px;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+    .footer strong {
+        color: #c0392b;
+    }
+    
+    /* Badges */
+    .badge {
+        display: inline-block;
+        padding: 3px 14px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin: 2px;
+    }
+    .badge-red {
+        background: #fadbd8;
+        color: #922b21;
+    }
+    .badge-green {
+        background: #d5f5e3;
+        color: #1a6e34;
+    }
+    .badge-blue {
+        background: #d6eaf8;
+        color: #1a5276;
+    }
+    
+    /* Labels */
+    label {
+        font-weight: 600 !important;
+        color: #1a1a2e !important;
+    }
+    
+    /* Inputs */
+    .stTextInput input, .stSelectbox select {
+        font-size: 1rem !important;
+        padding: 10px !important;
+        border-radius: 8px !important;
+        border: 1px solid #ccc !important;
+    }
+    
+    /* Success/Error Messages */
+    .stAlert {
+        font-size: 1rem !important;
+        padding: 12px !important;
+        border-radius: 8px !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -84,12 +248,11 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ============================================
-# LOAD REAL DATA (10,000 DONORS)
+# LOAD REAL DATA
 # ============================================
 
 @st.cache_data
 def load_data():
-    # Create 10,000 realistic donors
     np.random.seed(42)
     
     cities = ['Delhi', 'Mumbai', 'Chennai', 'Bangalore', 'Hyderabad', 
@@ -97,7 +260,6 @@ def load_data():
     
     blood_groups = ['O+', 'A+', 'B+', 'AB+', 'O-', 'A-', 'B-', 'AB-']
     
-    # Indian city coordinates
     city_coords = {
         'Delhi': (28.6139, 77.2090), 'Mumbai': (19.0760, 72.8777),
         'Chennai': (13.0827, 80.2707), 'Bangalore': (12.9716, 77.5946),
@@ -106,7 +268,6 @@ def load_data():
         'Jaipur': (26.9124, 75.7873), 'Lucknow': (26.8467, 80.9462)
     }
     
-    # First names and last names
     first_names = ['Rahul', 'Priya', 'Amit', 'Neha', 'Vikram', 'Sneha', 'Arjun', 'Meera',
                    'Karan', 'Ananya', 'Rohan', 'Pooja', 'Suresh', 'Lakshmi', 'Manoj',
                    'Divya', 'Naveen', 'Kavya', 'Srinivas', 'Anjali', 'Rajesh', 'Sangeeta',
@@ -228,17 +389,17 @@ with st.sidebar:
     st.markdown("### 🩸 Blood Groups")
     bg_counts = df['blood_group'].value_counts()
     for bg, count in bg_counts.items():
-        st.markdown(f"{bg} → {count:,}")
+        st.markdown(f"**{bg}** → {count:,}")
     
     st.markdown("---")
     
     st.markdown("### 📍 Cities")
     city_counts = df['city'].value_counts().head(6)
     for city, count in city_counts.items():
-        st.markdown(f"{city} → {count:,}")
+        st.markdown(f"**{city}** → {count:,}")
     
     st.markdown("---")
-    st.caption("🤖 AI-Powered Matching Engine")
+    st.caption("🤖 AI-Powered Matching")
 
 # ============================================
 # MAIN CONTENT
@@ -273,6 +434,10 @@ with col2:
         st.markdown(f"**Compatible Groups:** {', '.join(compatible_groups)}")
         st.markdown('</div>', unsafe_allow_html=True)
 
+# ============================================
+# FIND DONORS BUTTON
+# ============================================
+
 if st.button("🔍 Find Donors Now", use_container_width=True):
     lat, lon = cities.get(city, (28.6139, 77.2090))
     
@@ -292,10 +457,10 @@ if st.button("🔍 Find Donors Now", use_container_width=True):
         for i, (_, donor) in enumerate(donors.iterrows()):
             col1, col2, col3 = st.columns([0.5, 3, 1.5])
             with col1:
-                st.markdown(f"<h3 style='color:#d7263d;'>{emojis[i]}</h3>", unsafe_allow_html=True)
+                st.markdown(f"<h3 style='color:#c0392b;'>{emojis[i]}</h3>", unsafe_allow_html=True)
             with col2:
                 st.markdown(f"""
-                <div class="donor-card" style="border-left-color: {'#d7263d' if i == 0 else '#666'};">
+                <div class="donor-card" style="border-left-color: {'#c0392b' if i == 0 else '#666'};">
                     <span class="name">{donor['name']}</span>
                     <span class="badge badge-red">🩸 {donor['blood_group']}</span>
                     <span class="badge badge-blue">📍 {donor['city']}</span>
@@ -305,7 +470,7 @@ if st.button("🔍 Find Donors Now", use_container_width=True):
             with col3:
                 st.markdown(f"""
                 <div style="text-align: right; padding-top: 8px;">
-                    <span style="font-size: 1.5rem; font-weight: 800; color: #2e7d32;">{donor['distance_km']:.1f} km</span>
+                    <span style="font-size: 1.5rem; font-weight: 800; color: #27ae60;">{donor['distance_km']:.1f} km</span>
                     <div style="font-size: 0.8rem; color: #888;">Priority: {donor['priority_score']:.2f}</div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -323,9 +488,13 @@ if st.button("🔍 Find Donors Now", use_container_width=True):
         
         st.success("📱 Notification sent to donor! ✅")
 
+# ============================================
+# FOOTER
+# ============================================
+
 st.markdown("""
 <div class="footer">
     <p>🩸 <strong>RaktConnect</strong> — Saving Lives Through Intelligent Donor Matching</p>
-    <p>© 2026 Team RaktConnect | CodeStorm 2026 — FutureForge</p>
+    <p style="font-size: 0.85rem; color: #888;">© 2026 Team RaktConnect | CodeStorm 2026 — FutureForge</p>
 </div>
 """, unsafe_allow_html=True)
