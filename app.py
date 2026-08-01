@@ -1,7 +1,6 @@
 # ============================================
 # RaktConnect — AI Emergency Blood Donor Network
 # CodeStorm 2026 — FutureForge
-# Professional edition
 # ============================================
 
 import streamlit as st
@@ -9,10 +8,6 @@ import pandas as pd
 import numpy as np
 from math import radians, sin, cos, sqrt, asin
 import time
-
-# ============================================
-# PAGE CONFIGURATION
-# ============================================
 
 st.set_page_config(
     page_title="RaktConnect — Emergency Blood Donor Network",
@@ -22,8 +17,7 @@ st.set_page_config(
 )
 
 # ============================================
-# STYLE — clinical, professional palette
-# Primary: deep teal (trust, medical) | Accent: muted crimson (urgency, used sparingly)
+# STYLE
 # ============================================
 
 st.markdown("""
@@ -31,13 +25,15 @@ st.markdown("""
 <style>
     :root{
         --ink:#1C2530;
-        --muted:#5B6675;
+        --muted:#606A78;
         --teal:#0E5C56;
         --teal-dark:#0A423E;
+        --teal-pale:#EAF2F1;
         --crimson:#A6303C;
-        --bg:#F6F5F2;
+        --crimson-pale:#FBF0F1;
+        --bg:#F7F6F3;
         --card:#FFFFFF;
-        --line:#E3E1DB;
+        --line:#E4E2DC;
         --amber:#B8862E;
     }
 
@@ -48,56 +44,62 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
     }
 
-    /* ---- Header ---- */
-    .hdr{
-        background: var(--teal);
-        padding: 34px 36px;
-        border-radius: 4px;
-        margin-bottom: 28px;
-        border-left: 6px solid var(--crimson);
+    /* Constrain main content width for a finished, app-like feel */
+    .block-container{
+        max-width: 1080px;
+        padding-top: 1.5rem;
+        padding-bottom: 3rem;
     }
-    .hdr .eyebrow{
-        color: #B7D9D5 !important;
-        font-size: 0.72rem;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        font-weight: 600;
-        margin-bottom: 6px;
+
+    /* ---- Slim top bar ---- */
+    .topbar{
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding: 0 0 16px 0;
+        border-bottom: 2px solid var(--teal);
+        margin-bottom: 26px;
     }
-    .hdr h1{
+    .topbar .brand{
+        display: flex; align-items: baseline; gap: 10px;
+    }
+    .topbar .mark{
         font-family: 'Source Serif Pro', serif !important;
-        color: #FFFFFF !important;
-        font-size: 2.4rem;
-        font-weight: 700;
-        margin: 0;
+        font-size: 1.55rem; font-weight: 700; color: var(--teal-dark) !important;
         letter-spacing: -0.01em;
     }
-    .hdr .tagline{
-        color: #DCEAE8 !important;
-        font-size: 1rem;
-        margin-top: 8px;
-        font-weight: 400;
+    .topbar .mark span{ color: var(--crimson) !important; }
+    .topbar .desc{ font-size: 0.85rem; color: var(--muted) !important; }
+    .topbar .eyebrow{
+        font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+        color: var(--muted) !important; font-weight: 600;
     }
 
     /* ---- Cards ---- */
     .card{
         background: var(--card);
-        padding: 26px 28px;
-        border-radius: 4px;
+        padding: 24px 26px;
+        border-radius: 6px;
         border: 1px solid var(--line);
-        margin-bottom: 18px;
+        margin-bottom: 16px;
     }
     .card h3{
         font-family: 'Source Serif Pro', serif !important;
         color: var(--teal-dark) !important;
-        font-size: 1.15rem;
+        font-size: 1.05rem;
         font-weight: 700;
-        margin-bottom: 16px;
+        margin: 0 0 16px 0;
         padding-bottom: 10px;
         border-bottom: 1px solid var(--line);
+        text-transform: none;
     }
     .card, .card p, .card div, .card span, .card label, .card strong{
         color: var(--ink) !important;
+    }
+
+    .section-label{
+        font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+        color: var(--muted) !important; font-weight: 700; margin: 6px 0 10px 0;
     }
 
     /* ---- Sidebar ---- */
@@ -105,130 +107,111 @@ st.markdown("""
     section[data-testid="stSidebar"] *{ color: var(--ink) !important; }
     section[data-testid="stSidebar"] h2{
         font-family: 'Source Serif Pro', serif !important;
-        font-size: 1.05rem !important;
+        font-size: 0.98rem !important;
         color: var(--teal-dark) !important;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
     }
 
     /* ---- Inputs ---- */
     .stSelectbox label, .stTextInput label, .stNumberInput label{
         color: var(--muted) !important;
         font-weight: 600 !important;
-        font-size: 0.82rem !important;
+        font-size: 0.78rem !important;
         text-transform: uppercase;
-        letter-spacing: 0.03em;
+        letter-spacing: 0.04em;
     }
     .stSelectbox div[data-baseweb="select"] *{ color: var(--ink) !important; }
     .stTextInput input, .stNumberInput input{
         color: var(--ink) !important;
         background: #FFFFFF !important;
         border: 1px solid var(--line) !important;
-        border-radius: 3px !important;
+        border-radius: 4px !important;
     }
-    .stTextInput input:focus, .stNumberInput input:focus{
-        border-color: var(--teal) !important;
-    }
+    .stTextInput input:focus, .stNumberInput input:focus{ border-color: var(--teal) !important; }
 
     /* ---- Tabs ---- */
-    .stTabs [data-baseweb="tab-list"]{ border-bottom: 1px solid var(--line); gap: 4px; }
-    .stTabs [data-baseweb="tab"]{
-        color: var(--muted) !important;
-        font-weight: 600;
-        font-size: 0.92rem;
-    }
+    .stTabs [data-baseweb="tab-list"]{ border-bottom: 1px solid var(--line); gap: 6px; }
+    .stTabs [data-baseweb="tab"]{ color: var(--muted) !important; font-weight: 600; font-size: 0.9rem; }
     .stTabs [aria-selected="true"]{ color: var(--teal-dark) !important; }
 
-    /* ---- Stat blocks ---- */
+    /* ---- KPI stat tiles ---- */
     .stat{
         background: #FFFFFF;
-        padding: 16px 18px;
-        border-radius: 4px;
+        padding: 14px 16px;
+        border-radius: 6px;
         border: 1px solid var(--line);
-        border-top: 3px solid var(--teal);
     }
-    .stat .number{ font-size: 1.9rem; font-weight: 700; color: var(--teal-dark) !important; font-family: 'Source Serif Pro', serif; }
-    .stat .label{ font-size: 0.74rem; color: var(--muted) !important; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; }
+    .stat .label{ font-size: 0.68rem; color: var(--muted) !important; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 4px; }
+    .stat .number{ font-size: 1.65rem; font-weight: 700; color: var(--teal-dark) !important; font-family: 'Source Serif Pro', serif; line-height: 1.1; }
 
-    /* ---- Donor row ---- */
-    .donor-row{
-        background: #FFFFFF;
-        padding: 16px 20px;
-        border-radius: 3px;
-        border: 1px solid var(--line);
-        border-left: 3px solid var(--teal);
-        margin: 8px 0;
+    /* ---- Donor list ---- */
+    .donor{
+        display: flex; justify-content: space-between; align-items: flex-start;
+        background: #FFFFFF; border: 1px solid var(--line); border-radius: 5px;
+        padding: 14px 18px; margin: 7px 0;
     }
-    .donor-row.rank1{ border-left: 3px solid var(--crimson); background: #FBF3F2; }
-    .donor-row, .donor-row *{ color: var(--ink) !important; }
-    .donor-row .name{ font-size: 1.02rem; font-weight: 700; }
-    .donor-row .meta{ font-size: 0.86rem; color: var(--muted) !important; }
-    .donor-row .bg-tag{
+    .donor.top{ border-color: var(--crimson); background: var(--crimson-pale); }
+    .donor, .donor *{ color: var(--ink) !important; }
+    .donor .left{ flex: 1; }
+    .donor .name-row{ display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+    .donor .name{ font-size: 0.98rem; font-weight: 700; }
+    .donor .flag{ font-size: 0.68rem; font-weight: 700; color: var(--crimson) !important; text-transform: uppercase; letter-spacing: 0.04em; }
+    .donor .meta{ font-size: 0.83rem; color: var(--muted) !important; }
+    .donor .right{ text-align: right; flex-shrink: 0; padding-left: 16px; }
+    .donor .dist{ font-size: 1.05rem; font-weight: 700; color: var(--teal-dark) !important; }
+    .donor .bg-chip{
         display: inline-block; background: var(--teal); color: #fff !important;
-        padding: 2px 9px; border-radius: 3px; font-size: 0.78rem; font-weight: 700;
+        padding: 2px 8px; border-radius: 3px; font-size: 0.72rem; font-weight: 700; margin-top: 4px;
     }
-
-    .wa-link{
-        display: inline-block;
-        margin-top: 8px;
-        color: var(--teal-dark) !important;
-        font-size: 0.85rem;
-        font-weight: 600;
-        text-decoration: none;
-        border-bottom: 1px solid var(--teal-dark);
+    .donor .wa{
+        display: block; margin-top: 6px; font-size: 0.78rem; font-weight: 600;
+        color: var(--teal-dark) !important; text-decoration: none; border-bottom: 1px solid var(--teal-dark);
     }
 
     .best-match{
-        background: #FFFFFF;
-        border: 1px solid var(--crimson);
-        border-top: 4px solid var(--crimson);
-        padding: 20px 24px;
-        border-radius: 4px;
-        margin-top: 14px;
+        background: #FFFFFF; border: 1px solid var(--line); border-left: 4px solid var(--crimson);
+        padding: 18px 22px; border-radius: 6px; margin-top: 14px;
     }
     .best-match, .best-match *{ color: var(--ink) !important; }
-    .best-match .label{
-        font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
-        color: var(--crimson) !important; font-weight: 700; margin-bottom: 6px;
+    .best-match .label{ font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--crimson) !important; font-weight: 700; margin-bottom: 8px; }
+    .best-match .phone{ font-size: 1.1rem; font-weight: 700; color: var(--teal-dark) !important; }
+
+    .shortage-note{
+        background: #FBF3E7; border: 1px solid var(--amber); border-left: 4px solid var(--amber);
+        padding: 10px 14px; border-radius: 4px; font-size: 0.86rem; color: var(--ink) !important; margin: 8px 0;
     }
-    .best-match .phone{ font-size: 1.15rem; font-weight: 700; color: var(--teal-dark) !important; }
 
     .stButton button{
-        background: var(--teal) !important;
-        color: #FFFFFF !important;
-        font-weight: 600 !important;
-        font-size: 0.95rem !important;
-        padding: 11px 28px !important;
-        border: none !important;
-        border-radius: 3px !important;
-        width: 100% !important;
-        letter-spacing: 0.01em;
+        background: var(--teal) !important; color: #FFFFFF !important;
+        font-weight: 600 !important; font-size: 0.9rem !important;
+        padding: 10px 24px !important; border: none !important;
+        border-radius: 4px !important; width: 100% !important;
     }
     .stButton button:hover{ background: var(--teal-dark) !important; }
 
     .footer{
-        text-align: center; padding: 20px; background: var(--teal-dark);
-        border-radius: 4px; margin-top: 28px;
+        text-align: center; padding: 16px; border-top: 1px solid var(--line);
+        margin-top: 32px;
     }
-    .footer, .footer p{ color: #DCEAE8 !important; font-size: 0.85rem; margin: 3px 0; }
-    .footer .brand{ color: #FFFFFF !important; font-weight: 700; }
+    .footer p{ color: var(--muted) !important; font-size: 0.8rem; margin: 2px 0; }
+    .footer .brand{ color: var(--teal-dark) !important; font-weight: 700; }
 
-    .map-box{ background: #FFFFFF; padding: 16px; border-radius: 4px; border: 1px solid var(--line); }
-
-    .shortage-note{
-        background: #FBF3E7; border: 1px solid var(--amber); border-left: 4px solid var(--amber);
-        padding: 12px 16px; border-radius: 3px; font-size: 0.9rem; color: var(--ink) !important;
-    }
+    .map-box{ background: #FFFFFF; padding: 16px; border-radius: 6px; border: 1px solid var(--line); }
 </style>
 """, unsafe_allow_html=True)
 
 # ============================================
-# HEADER
+# TOP BAR
 # ============================================
 
 st.markdown("""
-<div class="hdr">
-    <div class="eyebrow">Prototype · Emergency Response</div>
-    <h1>RaktConnect</h1>
-    <p class="tagline">Matching patients to the nearest medically compatible blood donor.</p>
+<div class="topbar">
+    <div class="brand">
+        <span class="mark">Rakt<span>Connect</span></span>
+        <span class="desc">Emergency Blood Donor Network</span>
+    </div>
+    <span class="eyebrow">Prototype · CodeStorm 2026</span>
 </div>
 """, unsafe_allow_html=True)
 
@@ -282,7 +265,7 @@ cities = {
 }
 
 # ============================================
-# COMPATIBILITY & MATCHING (medically correct: key = patient, value = eligible donors)
+# COMPATIBILITY & MATCHING
 # ============================================
 
 compatibility = {
@@ -321,7 +304,7 @@ def badge(donations):
     return 'New donor'
 
 # ============================================
-# NATIONWIDE SUMMARY (prominent, above the tabs)
+# NATIONWIDE SUMMARY
 # ============================================
 
 total_donors = len(df)
@@ -329,15 +312,16 @@ total_available = len(df[df['available'] == 'Yes'])
 total_cities = df['city'].nunique()
 avg_donations = df['donations'].mean()
 
+st.markdown('<div class="section-label">Network — All India</div>', unsafe_allow_html=True)
 s1, s2, s3, s4 = st.columns(4)
 with s1:
-    st.markdown(f'<div class="stat"><div class="number">{total_donors:,}</div><div class="label">Total Donors — All India</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="stat"><div class="label">Total Donors</div><div class="number">{total_donors:,}</div></div>', unsafe_allow_html=True)
 with s2:
-    st.markdown(f'<div class="stat"><div class="number">{total_available:,}</div><div class="label">Available Right Now</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="stat"><div class="label">Available Now</div><div class="number">{total_available:,}</div></div>', unsafe_allow_html=True)
 with s3:
-    st.markdown(f'<div class="stat"><div class="number">{total_cities}</div><div class="label">Cities Covered</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="stat"><div class="label">Cities Covered</div><div class="number">{total_cities}</div></div>', unsafe_allow_html=True)
 with s4:
-    st.markdown(f'<div class="stat"><div class="number">{avg_donations:.1f}</div><div class="label">Avg. Donations / Donor</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="stat"><div class="label">Avg. Donations</div><div class="number">{avg_donations:.1f}</div></div>', unsafe_allow_html=True)
 
 st.write("")
 
@@ -346,17 +330,9 @@ st.write("")
 # ============================================
 
 with st.sidebar:
-    st.markdown("## Network Overview")
-    c1, c2 = st.columns(2)
-    with c1:
-        st.markdown(f'<div class="stat"><div class="number">{len(df):,}</div><div class="label">Total Donors</div></div>', unsafe_allow_html=True)
-    with c2:
-        st.markdown(f'<div class="stat"><div class="number">{len(df[df["available"]=="Yes"]):,}</div><div class="label">Available</div></div>', unsafe_allow_html=True)
-
-    st.markdown("---")
-    st.markdown("**Top contributors**")
+    st.markdown("## Top Contributors")
     for _, row in df.nlargest(5, 'donations')[['name','donations']].iterrows():
-        st.markdown(f"<span style='font-size:0.88rem'>{row['name']} — {row['donations']} donations</span>", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-size:0.86rem; padding:4px 0; border-bottom:1px solid var(--line);'>{row['name']} <span style='color:var(--muted);float:right;'>{row['donations']}</span></div>", unsafe_allow_html=True)
 
 # ============================================
 # TABS
@@ -398,16 +374,20 @@ with tab1:
 
             st.write("")
             for i, (_, donor) in enumerate(donors.iterrows()):
-                row_class = "donor-row rank1" if i == 0 else "donor-row"
+                row_class = "donor top" if i == 0 else "donor"
                 wa_link = f"https://wa.me/91{donor['phone']}?text=Hi%20{donor['name'].split()[0]}%2C%20I%20need%20emergency%20blood%20donation."
-                best_tag = ' <span style="color:var(--crimson);font-size:0.8rem;font-weight:700;">· BEST MATCH</span>' if i == 0 else ''
+                flag = '<span class="flag">Best Match</span>' if i == 0 else ''
                 row_html = (
                     f'<div class="{row_class}">'
-                    f'<span class="name">{donor["name"]}</span>{best_tag}'
-                    f'<span class="bg-tag" style="margin-left:8px;">{donor["blood_group"]}</span><br>'
-                    f'<span class="meta">{donor["city"]} · {donor["distance_km"]:.1f} km away · {badge(donor["donations"])}</span><br>'
-                    f'<span class="meta">{donor["phone"]}</span>'
-                    f'<a class="wa-link" href="{wa_link}" target="_blank">Contact on WhatsApp →</a>'
+                    f'<div class="left">'
+                    f'<div class="name-row"><span class="name">{donor["name"]}</span>{flag}</div>'
+                    f'<span class="meta">{donor["city"]} · {badge(donor["donations"])} · {donor["phone"]}</span>'
+                    f'<a class="wa" href="{wa_link}" target="_blank">Contact on WhatsApp →</a>'
+                    f'</div>'
+                    f'<div class="right">'
+                    f'<div class="dist">{donor["distance_km"]:.1f} km</div>'
+                    f'<span class="bg-chip">{donor["blood_group"]}</span>'
+                    f'</div>'
                     f'</div>'
                 )
                 st.markdown(row_html, unsafe_allow_html=True)
@@ -417,10 +397,10 @@ with tab1:
             best_html = (
                 f'<div class="best-match">'
                 f'<div class="label">Recommended Contact</div>'
-                f'<p style="font-weight:700; font-size:1.05rem; margin:0;">{best["name"]} — {best["blood_group"]}</p>'
+                f'<p style="font-weight:700; font-size:1.02rem; margin:0;">{best["name"]} — {best["blood_group"]}</p>'
                 f'<p class="phone">{best["phone"]}</p>'
-                f'<p style="margin:2px 0;">{best["distance_km"]:.1f} km away · approx. {best["distance_km"]/30*60:.0f} min</p>'
-                f'<a class="wa-link" href="{wa_link}" target="_blank">Contact on WhatsApp →</a>'
+                f'<p style="margin:2px 0; color:var(--muted);">{best["distance_km"]:.1f} km away · approx. {best["distance_km"]/30*60:.0f} min</p>'
+                f'<a class="wa" href="{wa_link}" target="_blank">Contact on WhatsApp →</a>'
                 f'</div>'
             )
             st.markdown(best_html, unsafe_allow_html=True)
@@ -470,10 +450,10 @@ with tab3:
         st.warning("No donor location data available.")
     st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("<br>**Donors by city**", unsafe_allow_html=True)
+    st.markdown('<div class="section-label" style="margin-top:20px;">Donors by City</div>', unsafe_allow_html=True)
     st.bar_chart(df['city'].value_counts())
 
-    st.markdown("<br>**Available donors by blood group — All India**", unsafe_allow_html=True)
+    st.markdown('<div class="section-label" style="margin-top:20px;">Available Donors by Blood Group — All India</div>', unsafe_allow_html=True)
     bg_available = df[df['available'] == 'Yes']['blood_group'].value_counts()
     st.bar_chart(bg_available)
 
@@ -483,7 +463,7 @@ with tab3:
 
 st.markdown("""
 <div class="footer">
-    <p class="brand">RaktConnect</p>
+    <p><span class="brand">RaktConnect</span> — Saving lives through intelligent donor matching</p>
     <p>Built for CodeStorm 2026: FutureForge</p>
 </div>
 """, unsafe_allow_html=True)
