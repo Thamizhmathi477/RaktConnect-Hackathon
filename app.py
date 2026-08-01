@@ -379,28 +379,30 @@ with tab1:
             for i, (_, donor) in enumerate(donors.iterrows()):
                 row_class = "donor-row rank1" if i == 0 else "donor-row"
                 wa_link = f"https://wa.me/91{donor['phone']}?text=Hi%20{donor['name'].split()[0]}%2C%20I%20need%20emergency%20blood%20donation."
-                st.markdown(f"""
-                <div class="{row_class}">
-                    <span class="name">{donor['name']}</span>
-                    {' <span style="color:var(--crimson);font-size:0.8rem;font-weight:700;">· BEST MATCH</span>' if i==0 else ''}
-                    <span class="bg-tag" style="margin-left:8px;">{donor['blood_group']}</span><br>
-                    <span class="meta">{donor['city']} · {donor['distance_km']:.1f} km away · {badge(donor['donations'])}</span><br>
-                    <span class="meta">{donor['phone']}</span>
-                    <a class="wa-link" href="{wa_link}" target="_blank">Contact on WhatsApp →</a>
-                </div>
-                """, unsafe_allow_html=True)
+                best_tag = ' <span style="color:var(--crimson);font-size:0.8rem;font-weight:700;">· BEST MATCH</span>' if i == 0 else ''
+                row_html = (
+                    f'<div class="{row_class}">'
+                    f'<span class="name">{donor["name"]}</span>{best_tag}'
+                    f'<span class="bg-tag" style="margin-left:8px;">{donor["blood_group"]}</span><br>'
+                    f'<span class="meta">{donor["city"]} · {donor["distance_km"]:.1f} km away · {badge(donor["donations"])}</span><br>'
+                    f'<span class="meta">{donor["phone"]}</span>'
+                    f'<a class="wa-link" href="{wa_link}" target="_blank">Contact on WhatsApp →</a>'
+                    f'</div>'
+                )
+                st.markdown(row_html, unsafe_allow_html=True)
 
             best = donors.iloc[0]
             wa_link = f"https://wa.me/91{best['phone']}?text=Hi%20{best['name'].split()[0]}%2C%20I%20need%20emergency%20blood%20donation."
-            st.markdown(f"""
-            <div class="best-match">
-                <div class="label">Recommended Contact</div>
-                <p style="font-weight:700; font-size:1.05rem; margin:0;">{best['name']} — {best['blood_group']}</p>
-                <p class="phone">{best['phone']}</p>
-                <p style="margin:2px 0;">{best['distance_km']:.1f} km away · approx. {best['distance_km']/30*60:.0f} min</p>
-                <a class="wa-link" href="{wa_link}" target="_blank">Contact on WhatsApp →</a>
-            </div>
-            """, unsafe_allow_html=True)
+            best_html = (
+                f'<div class="best-match">'
+                f'<div class="label">Recommended Contact</div>'
+                f'<p style="font-weight:700; font-size:1.05rem; margin:0;">{best["name"]} — {best["blood_group"]}</p>'
+                f'<p class="phone">{best["phone"]}</p>'
+                f'<p style="margin:2px 0;">{best["distance_km"]:.1f} km away · approx. {best["distance_km"]/30*60:.0f} min</p>'
+                f'<a class="wa-link" href="{wa_link}" target="_blank">Contact on WhatsApp →</a>'
+                f'</div>'
+            )
+            st.markdown(best_html, unsafe_allow_html=True)
 
 # ---- TAB 2 ----
 with tab2:
