@@ -321,6 +321,27 @@ def badge(donations):
     return 'New donor'
 
 # ============================================
+# NATIONWIDE SUMMARY (prominent, above the tabs)
+# ============================================
+
+total_donors = len(df)
+total_available = len(df[df['available'] == 'Yes'])
+total_cities = df['city'].nunique()
+avg_donations = df['donations'].mean()
+
+s1, s2, s3, s4 = st.columns(4)
+with s1:
+    st.markdown(f'<div class="stat"><div class="number">{total_donors:,}</div><div class="label">Total Donors — All India</div></div>', unsafe_allow_html=True)
+with s2:
+    st.markdown(f'<div class="stat"><div class="number">{total_available:,}</div><div class="label">Available Right Now</div></div>', unsafe_allow_html=True)
+with s3:
+    st.markdown(f'<div class="stat"><div class="number">{total_cities}</div><div class="label">Cities Covered</div></div>', unsafe_allow_html=True)
+with s4:
+    st.markdown(f'<div class="stat"><div class="number">{avg_donations:.1f}</div><div class="label">Avg. Donations / Donor</div></div>', unsafe_allow_html=True)
+
+st.write("")
+
+# ============================================
 # SIDEBAR
 # ============================================
 
@@ -451,6 +472,10 @@ with tab3:
 
     st.markdown("<br>**Donors by city**", unsafe_allow_html=True)
     st.bar_chart(df['city'].value_counts())
+
+    st.markdown("<br>**Available donors by blood group — All India**", unsafe_allow_html=True)
+    bg_available = df[df['available'] == 'Yes']['blood_group'].value_counts()
+    st.bar_chart(bg_available)
 
 # ============================================
 # FOOTER
