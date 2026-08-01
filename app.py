@@ -1,5 +1,5 @@
 # ============================================
-# RaktConnect — AI Emergency Blood Donor Network
+# 🩸 RAKTCONNECT — Professional Edition
 # CodeStorm 2026 — FutureForge
 # ============================================
 
@@ -17,24 +17,27 @@ st.set_page_config(
 )
 
 # ============================================
-# STYLE
+# PROFESSIONAL STYLE — Corporate Blue + Trust Colors
 # ============================================
 
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
 <style>
     :root{
-        --ink:#1C2530;
-        --muted:#606A78;
-        --teal:#0E5C56;
-        --teal-dark:#0A423E;
-        --teal-pale:#EAF2F1;
-        --crimson:#A6303C;
-        --crimson-pale:#FBF0F1;
-        --bg:#F7F6F3;
+        --navy:#0A1628;
+        --navy-light:#1A2A4A;
+        --blue:#1A5C9A;
+        --blue-light:#E8F0FE;
+        --blue-mid:#4A8BC2;
+        --red:#C0392B;
+        --red-light:#FDF2F1;
+        --ink:#1A1A2E;
+        --muted:#5A6A7A;
+        --bg:#F5F7FA;
         --card:#FFFFFF;
-        --line:#E4E2DC;
-        --amber:#B8862E;
+        --line:#E2E8F0;
+        --green:#27AE60;
+        --green-light:#E8F8F0;
     }
 
     .stApp { background-color: var(--bg) !important; font-family: 'Inter', sans-serif; }
@@ -44,160 +47,285 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
     }
 
-    /* Constrain main content width for a finished, app-like feel */
-    .block-container{
-        max-width: 1080px;
-        padding-top: 1.5rem;
-        padding-bottom: 3rem;
-    }
+    .block-container { max-width: 1200px; padding-top: 1.5rem; padding-bottom: 3rem; }
 
-    /* ---- Slim top bar ---- */
-    .topbar{
+    /* ---- Top Bar ---- */
+    .topbar {
         display: flex;
-        align-items: baseline;
+        align-items: center;
         justify-content: space-between;
         padding: 0 0 16px 0;
-        border-bottom: 2px solid var(--teal);
-        margin-bottom: 26px;
+        border-bottom: 3px solid var(--navy);
+        margin-bottom: 24px;
     }
-    .topbar .brand{
-        display: flex; align-items: baseline; gap: 10px;
-    }
-    .topbar .mark{
+    .topbar .brand { display: flex; align-items: baseline; gap: 12px; }
+    .topbar .mark {
         font-family: 'Source Serif Pro', serif !important;
-        font-size: 1.55rem; font-weight: 700; color: var(--teal-dark) !important;
-        letter-spacing: -0.01em;
+        font-size: 1.8rem; font-weight: 700; color: var(--navy) !important;
     }
-    .topbar .mark span{ color: var(--crimson) !important; }
-    .topbar .desc{ font-size: 0.85rem; color: var(--muted) !important; }
-    .topbar .eyebrow{
-        font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
-        color: var(--muted) !important; font-weight: 600;
+    .topbar .mark span { color: var(--blue) !important; }
+    .topbar .desc { font-size: 0.85rem; color: var(--muted) !important; font-weight: 400; }
+    .topbar .badge {
+        background: var(--navy);
+        color: white !important;
+        padding: 4px 16px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
     }
 
     /* ---- Cards ---- */
-    .card{
+    .card {
         background: var(--card);
-        padding: 24px 26px;
-        border-radius: 6px;
+        padding: 24px 28px;
+        border-radius: 8px;
         border: 1px solid var(--line);
         margin-bottom: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
-    .card h3{
+    .card h3 {
         font-family: 'Source Serif Pro', serif !important;
-        color: var(--teal-dark) !important;
-        font-size: 1.05rem;
+        color: var(--navy) !important;
+        font-size: 1.1rem;
         font-weight: 700;
-        margin: 0 0 16px 0;
+        margin: 0 0 14px 0;
         padding-bottom: 10px;
-        border-bottom: 1px solid var(--line);
-        text-transform: none;
+        border-bottom: 2px solid var(--line);
     }
-    .card, .card p, .card div, .card span, .card label, .card strong{
+    .card, .card p, .card div, .card span, .card label, .card strong {
         color: var(--ink) !important;
     }
 
-    .section-label{
-        font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
-        color: var(--muted) !important; font-weight: 700; margin: 6px 0 10px 0;
+    /* ---- Stat Tiles ---- */
+    .stat {
+        background: var(--card);
+        padding: 16px 18px;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        border-top: 4px solid var(--blue);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+    .stat .label {
+        font-size: 0.7rem;
+        color: var(--muted) !important;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+    .stat .number {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--navy) !important;
+        font-family: 'Source Serif Pro', serif;
+        line-height: 1.1;
     }
 
-    /* ---- Sidebar ---- */
-    section[data-testid="stSidebar"]{ background-color: #FFFFFF !important; border-right: 1px solid var(--line); }
-    section[data-testid="stSidebar"] *{ color: var(--ink) !important; }
-    section[data-testid="stSidebar"] h2{
-        font-family: 'Source Serif Pro', serif !important;
-        font-size: 0.98rem !important;
-        color: var(--teal-dark) !important;
+    /* ---- Donor List ---- */
+    .donor {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 14px 18px;
+        margin: 6px 0;
+        transition: all 0.2s;
+    }
+    .donor:hover { border-color: var(--blue); box-shadow: 0 2px 8px rgba(26, 92, 154, 0.08); }
+    .donor.top { border-color: var(--blue); background: var(--blue-light); border-left: 4px solid var(--blue); }
+    .donor .left { flex: 1; }
+    .donor .name-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+    .donor .name { font-size: 0.98rem; font-weight: 700; color: var(--navy) !important; }
+    .donor .flag {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: var(--blue) !important;
         text-transform: uppercase;
-        letter-spacing: 0.04em;
+        letter-spacing: 0.05em;
+        background: var(--blue-light);
+        padding: 2px 12px;
+        border-radius: 12px;
+    }
+    .donor .meta { font-size: 0.82rem; color: var(--muted) !important; }
+    .donor .right { text-align: right; flex-shrink: 0; padding-left: 16px; }
+    .donor .dist { font-size: 1.1rem; font-weight: 700; color: var(--navy) !important; }
+    .donor .bg-chip {
+        display: inline-block;
+        background: var(--navy);
+        color: #fff !important;
+        padding: 2px 10px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        margin-top: 4px;
+    }
+    .donor .wa {
+        display: inline-block;
+        margin-top: 6px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--blue) !important;
+        text-decoration: none;
+        border-bottom: 2px solid var(--blue);
+    }
+    .donor .wa:hover { color: var(--navy) !important; border-color: var(--navy) !important; }
+
+    /* ---- Best Match ---- */
+    .best-match {
+        background: var(--blue-light);
+        border: 2px solid var(--blue);
+        padding: 20px 24px;
+        border-radius: 8px;
+        margin-top: 14px;
+    }
+    .best-match, .best-match * { color: var(--ink) !important; }
+    .best-match .label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--blue) !important;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+    .best-match .phone { font-size: 1.2rem; font-weight: 700; color: var(--navy) !important; }
+    .best-match .wa {
+        display: inline-block;
+        margin-top: 8px;
+        font-weight: 700;
+        color: var(--blue) !important;
+        text-decoration: none;
+        border-bottom: 2px solid var(--blue);
+    }
+
+    /* ---- Shortage Alert ---- */
+    .shortage-note {
+        background: #FEF9E7;
+        border: 1px solid #F39C12;
+        border-left: 4px solid #F39C12;
+        padding: 12px 16px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        color: var(--ink) !important;
+        margin: 8px 0;
+    }
+
+    /* ---- Buttons ---- */
+    .stButton button {
+        background: var(--navy) !important;
+        color: #FFFFFF !important;
+        font-weight: 600 !important;
+        font-size: 0.95rem !important;
+        padding: 12px 28px !important;
+        border: none !important;
+        border-radius: 6px !important;
+        width: 100% !important;
+        transition: all 0.3s !important;
+    }
+    .stButton button:hover {
+        background: var(--blue) !important;
+        box-shadow: 0 4px 16px rgba(26, 92, 154, 0.3) !important;
     }
 
     /* ---- Inputs ---- */
-    .stSelectbox label, .stTextInput label, .stNumberInput label{
+    .stSelectbox label, .stTextInput label, .stNumberInput label {
         color: var(--muted) !important;
         font-weight: 600 !important;
         font-size: 0.78rem !important;
         text-transform: uppercase;
         letter-spacing: 0.04em;
     }
-    .stSelectbox div[data-baseweb="select"] *{ color: var(--ink) !important; }
-    .stTextInput input, .stNumberInput input{
+    .stSelectbox div[data-baseweb="select"] * { color: var(--ink) !important; }
+    .stTextInput input, .stNumberInput input {
         color: var(--ink) !important;
         background: #FFFFFF !important;
-        border: 1px solid var(--line) !important;
-        border-radius: 4px !important;
+        border: 2px solid var(--line) !important;
+        border-radius: 6px !important;
+        padding: 10px 14px !important;
     }
-    .stTextInput input:focus, .stNumberInput input:focus{ border-color: var(--teal) !important; }
+    .stTextInput input:focus, .stNumberInput input:focus { border-color: var(--blue) !important; }
 
     /* ---- Tabs ---- */
-    .stTabs [data-baseweb="tab-list"]{ border-bottom: 1px solid var(--line); gap: 6px; }
-    .stTabs [data-baseweb="tab"]{ color: var(--muted) !important; font-weight: 600; font-size: 0.9rem; }
-    .stTabs [aria-selected="true"]{ color: var(--teal-dark) !important; }
-
-    /* ---- KPI stat tiles ---- */
-    .stat{
-        background: #FFFFFF;
-        padding: 14px 16px;
-        border-radius: 6px;
-        border: 1px solid var(--line);
+    .stTabs [data-baseweb="tab-list"] { border-bottom: 2px solid var(--line); gap: 8px; }
+    .stTabs [data-baseweb="tab"] {
+        color: var(--muted) !important;
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 8px 16px;
     }
-    .stat .label{ font-size: 0.68rem; color: var(--muted) !important; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 4px; }
-    .stat .number{ font-size: 1.65rem; font-weight: 700; color: var(--teal-dark) !important; font-family: 'Source Serif Pro', serif; line-height: 1.1; }
-
-    /* ---- Donor list ---- */
-    .donor{
-        display: flex; justify-content: space-between; align-items: flex-start;
-        background: #FFFFFF; border: 1px solid var(--line); border-radius: 5px;
-        padding: 14px 18px; margin: 7px 0;
-    }
-    .donor.top{ border-color: var(--crimson); background: var(--crimson-pale); }
-    .donor, .donor *{ color: var(--ink) !important; }
-    .donor .left{ flex: 1; }
-    .donor .name-row{ display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
-    .donor .name{ font-size: 0.98rem; font-weight: 700; }
-    .donor .flag{ font-size: 0.68rem; font-weight: 700; color: var(--crimson) !important; text-transform: uppercase; letter-spacing: 0.04em; }
-    .donor .meta{ font-size: 0.83rem; color: var(--muted) !important; }
-    .donor .right{ text-align: right; flex-shrink: 0; padding-left: 16px; }
-    .donor .dist{ font-size: 1.05rem; font-weight: 700; color: var(--teal-dark) !important; }
-    .donor .bg-chip{
-        display: inline-block; background: var(--teal); color: #fff !important;
-        padding: 2px 8px; border-radius: 3px; font-size: 0.72rem; font-weight: 700; margin-top: 4px;
-    }
-    .donor .wa{
-        display: block; margin-top: 6px; font-size: 0.78rem; font-weight: 600;
-        color: var(--teal-dark) !important; text-decoration: none; border-bottom: 1px solid var(--teal-dark);
+    .stTabs [aria-selected="true"] {
+        color: var(--navy) !important;
+        border-bottom: 3px solid var(--blue) !important;
     }
 
-    .best-match{
-        background: #FFFFFF; border: 1px solid var(--line); border-left: 4px solid var(--crimson);
-        padding: 18px 22px; border-radius: 6px; margin-top: 14px;
+    /* ---- Sidebar ---- */
+    section[data-testid="stSidebar"] {
+        background-color: #FFFFFF !important;
+        border-right: 1px solid var(--line);
+        padding-top: 20px;
     }
-    .best-match, .best-match *{ color: var(--ink) !important; }
-    .best-match .label{ font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--crimson) !important; font-weight: 700; margin-bottom: 8px; }
-    .best-match .phone{ font-size: 1.1rem; font-weight: 700; color: var(--teal-dark) !important; }
-
-    .shortage-note{
-        background: #FBF3E7; border: 1px solid var(--amber); border-left: 4px solid var(--amber);
-        padding: 10px 14px; border-radius: 4px; font-size: 0.86rem; color: var(--ink) !important; margin: 8px 0;
+    section[data-testid="stSidebar"] * { color: var(--ink) !important; }
+    section[data-testid="stSidebar"] h2 {
+        font-family: 'Source Serif Pro', serif !important;
+        font-size: 0.95rem !important;
+        color: var(--navy) !important;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 2px solid var(--line);
+        padding-bottom: 10px;
     }
 
-    .stButton button{
-        background: var(--teal) !important; color: #FFFFFF !important;
-        font-weight: 600 !important; font-size: 0.9rem !important;
-        padding: 10px 24px !important; border: none !important;
-        border-radius: 4px !important; width: 100% !important;
-    }
-    .stButton button:hover{ background: var(--teal-dark) !important; }
-
-    .footer{
-        text-align: center; padding: 16px; border-top: 1px solid var(--line);
+    /* ---- Footer ---- */
+    .footer {
+        text-align: center;
+        padding: 20px;
+        background: var(--navy);
+        border-radius: 8px;
         margin-top: 32px;
     }
-    .footer p{ color: var(--muted) !important; font-size: 0.8rem; margin: 2px 0; }
-    .footer .brand{ color: var(--teal-dark) !important; font-weight: 700; }
+    .footer p { color: #DCE8F0 !important; font-size: 0.85rem; margin: 3px 0; }
+    .footer .brand { color: #FFFFFF !important; font-weight: 700; }
 
-    .map-box{ background: #FFFFFF; padding: 16px; border-radius: 6px; border: 1px solid var(--line); }
+    .map-box { background: var(--card); padding: 16px; border-radius: 8px; border: 1px solid var(--line); }
+
+    /* ---- Thank You Message ---- */
+    .thank-you {
+        background: linear-gradient(135deg, var(--green-light), #D5F5E3);
+        border: 2px solid var(--green);
+        padding: 30px 35px;
+        border-radius: 12px;
+        text-align: center;
+        margin: 15px 0;
+    }
+    .thank-you h2 {
+        color: #1A6E34 !important;
+        font-family: 'Source Serif Pro', serif !important;
+        font-size: 1.8rem;
+        margin: 0;
+    }
+    .thank-you .sub {
+        color: #1A4A2A !important;
+        font-size: 1.1rem;
+        margin: 8px 0;
+    }
+    .thank-you .details {
+        background: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin: 12px 0;
+        border: 1px solid #A9DFBF;
+    }
+    .thank-you .details p { margin: 4px 0; color: var(--ink) !important; }
+
+    /* ---- Browse Table ---- */
+    .browse-table {
+        background: var(--card);
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        overflow: hidden;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -211,7 +339,7 @@ st.markdown("""
         <span class="mark">Rakt<span>Connect</span></span>
         <span class="desc">Emergency Blood Donor Network</span>
     </div>
-    <span class="eyebrow">Prototype · CodeStorm 2026</span>
+    <span class="badge">CodeStorm 2026</span>
 </div>
 """, unsafe_allow_html=True)
 
@@ -254,6 +382,13 @@ def load_data():
 
 if 'donors_df' not in st.session_state:
     st.session_state.donors_df = load_data()
+if 'registration_success' not in st.session_state:
+    st.session_state.registration_success = False
+if 'new_donor_name' not in st.session_state:
+    st.session_state.new_donor_name = ""
+if 'new_donor_details' not in st.session_state:
+    st.session_state.new_donor_details = {}
+
 df = st.session_state.donors_df
 
 cities = {
@@ -312,7 +447,6 @@ total_available = len(df[df['available'] == 'Yes'])
 total_cities = df['city'].nunique()
 avg_donations = df['donations'].mean()
 
-st.markdown('<div class="section-label">Network — All India</div>', unsafe_allow_html=True)
 s1, s2, s3, s4 = st.columns(4)
 with s1:
     st.markdown(f'<div class="stat"><div class="label">Total Donors</div><div class="number">{total_donors:,}</div></div>', unsafe_allow_html=True)
@@ -332,15 +466,15 @@ st.write("")
 with st.sidebar:
     st.markdown("## Top Contributors")
     for _, row in df.nlargest(5, 'donations')[['name','donations']].iterrows():
-        st.markdown(f"<div style='font-size:0.86rem; padding:4px 0; border-bottom:1px solid var(--line);'>{row['name']} <span style='color:var(--muted);float:right;'>{row['donations']}</span></div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-size:0.85rem; padding:5px 0; border-bottom:1px solid #E2E8F0; display:flex; justify-content:space-between;'><span>{row['name']}</span><span style='color:#5A6A7A;'>{row['donations']}</span></div>", unsafe_allow_html=True)
 
 # ============================================
 # TABS
 # ============================================
 
-tab1, tab2, tab3 = st.tabs(["Find Donors", "Register as Donor", "Donor Map"])
+tab1, tab2, tab3, tab4 = st.tabs(["🔍 Find Donors", "📋 Browse All Donors", "📝 Register", "🗺️ Map"])
 
-# ---- TAB 1 ----
+# ---- TAB 1: FIND DONORS ----
 with tab1:
     col1, col2 = st.columns(2)
     with col1:
@@ -359,7 +493,7 @@ with tab1:
         st.markdown(f"**Urgency** — {urgency}")
         st.markdown('</div>', unsafe_allow_html=True)
 
-    if st.button("Find Compatible Donors"):
+    if st.button("🔍 Find Compatible Donors"):
         lat, lon = cities.get(patient_city, (28.6139, 77.2090))
         with st.spinner("Matching against network..."):
             time.sleep(0.6)
@@ -370,82 +504,156 @@ with tab1:
         else:
             st.markdown(f"**{total:,} compatible donors found**, ranked by distance and urgency.")
             if len(donors) < 3:
-                st.markdown('<div class="shortage-note">Shortage alert — fewer than 3 compatible donors nearby.</div>', unsafe_allow_html=True)
+                st.markdown('<div class="shortage-note">⚠️ Shortage alert — fewer than 3 compatible donors nearby.</div>', unsafe_allow_html=True)
 
             st.write("")
             for i, (_, donor) in enumerate(donors.iterrows()):
                 row_class = "donor top" if i == 0 else "donor"
                 wa_link = f"https://wa.me/91{donor['phone']}?text=Hi%20{donor['name'].split()[0]}%2C%20I%20need%20emergency%20blood%20donation."
                 flag = '<span class="flag">Best Match</span>' if i == 0 else ''
-                row_html = (
-                    f'<div class="{row_class}">'
-                    f'<div class="left">'
-                    f'<div class="name-row"><span class="name">{donor["name"]}</span>{flag}</div>'
-                    f'<span class="meta">{donor["city"]} · {badge(donor["donations"])} · {donor["phone"]}</span>'
-                    f'<a class="wa" href="{wa_link}" target="_blank">Contact on WhatsApp →</a>'
-                    f'</div>'
-                    f'<div class="right">'
-                    f'<div class="dist">{donor["distance_km"]:.1f} km</div>'
-                    f'<span class="bg-chip">{donor["blood_group"]}</span>'
-                    f'</div>'
-                    f'</div>'
-                )
-                st.markdown(row_html, unsafe_allow_html=True)
+                st.markdown(f'''
+                <div class="{row_class}">
+                    <div class="left">
+                        <div class="name-row"><span class="name">{donor["name"]}</span>{flag}</div>
+                        <span class="meta">{donor["city"]} · {badge(donor["donations"])} · 📞 {donor["phone"]}</span>
+                        <a class="wa" href="{wa_link}" target="_blank">💬 Contact on WhatsApp →</a>
+                    </div>
+                    <div class="right">
+                        <div class="dist">{donor["distance_km"]:.1f} km</div>
+                        <span class="bg-chip">{donor["blood_group"]}</span>
+                    </div>
+                </div>
+                ''', unsafe_allow_html=True)
 
             best = donors.iloc[0]
             wa_link = f"https://wa.me/91{best['phone']}?text=Hi%20{best['name'].split()[0]}%2C%20I%20need%20emergency%20blood%20donation."
-            best_html = (
-                f'<div class="best-match">'
-                f'<div class="label">Recommended Contact</div>'
-                f'<p style="font-weight:700; font-size:1.02rem; margin:0;">{best["name"]} — {best["blood_group"]}</p>'
-                f'<p class="phone">{best["phone"]}</p>'
-                f'<p style="margin:2px 0; color:var(--muted);">{best["distance_km"]:.1f} km away · approx. {best["distance_km"]/30*60:.0f} min</p>'
-                f'<a class="wa" href="{wa_link}" target="_blank">Contact on WhatsApp →</a>'
-                f'</div>'
-            )
-            st.markdown(best_html, unsafe_allow_html=True)
+            st.markdown(f'''
+            <div class="best-match">
+                <div class="label">🎯 Recommended Contact</div>
+                <p style="font-weight:700; font-size:1.05rem; margin:0;">{best["name"]} — {best["blood_group"]}</p>
+                <p class="phone">📞 {best["phone"]}</p>
+                <p style="margin:2px 0; color:#5A6A7A;">📍 {best["distance_km"]:.1f} km away · approx. {best["distance_km"]/30*60:.0f} min</p>
+                <a class="wa" href="{wa_link}" target="_blank">💬 Contact on WhatsApp →</a>
+            </div>
+            ''', unsafe_allow_html=True)
 
-# ---- TAB 2 ----
+# ---- TAB 2: BROWSE ALL DONORS ----
 with tab2:
-    st.markdown('<div class="card"><h3>Donor Registration</h3>', unsafe_allow_html=True)
-    st.markdown("Register to join the donor network. Takes under a minute.")
+    st.markdown('<div class="card"><h3>All Registered Donors</h3>', unsafe_allow_html=True)
+    st.markdown(f"Showing all **{len(df):,}** registered donors in the network.")
+    
+    # Filters
     col1, col2 = st.columns(2)
     with col1:
-        new_name = st.text_input("Full Name", placeholder="Enter your full name", key="reg_name")
-        new_blood = st.selectbox("Blood Group", ['O+','A+','B+','AB+','O-','A-','B-','AB-'], key="reg_blood")
-        new_city = st.selectbox("City", list(cities.keys()), key="reg_city")
+        filter_blood = st.selectbox("Filter by Blood Group", ['All'] + ['O+','A+','B+','AB+','O-','A-','B-','AB-'])
     with col2:
-        new_phone = st.text_input("Phone Number", placeholder="9XXXXXXXXX", key="reg_phone")
-        new_available = st.selectbox("Availability", ['Yes','No'], key="reg_available")
-        new_donations = st.number_input("Total Past Donations", min_value=0, max_value=50, value=0, key="reg_donations")
-
-    if st.button("Register as Donor"):
-        if not new_name or not new_phone:
-            st.error("Please complete all fields.")
-        elif len(new_phone) < 10:
-            st.error("Please enter a valid 10-digit phone number.")
-        else:
-            lat, lon = cities.get(new_city, (28.6139, 77.2090))
-            lat += np.random.uniform(-0.3, 0.3)
-            lon += np.random.uniform(-0.3, 0.3)
-            new_donor = pd.DataFrame({
-                'name':[new_name], 'blood_group':[new_blood], 'city':[new_city],
-                'latitude':[lat], 'longitude':[lon], 'phone':[new_phone],
-                'available':[new_available], 'donations':[new_donations]
-            })
-            st.session_state.donors_df = pd.concat([st.session_state.donors_df, new_donor], ignore_index=True)
-            df = st.session_state.donors_df
-            st.success(f"Thank you, {new_name} — you're now registered.")
-            st.info(f"{new_name} · {new_blood} · {new_city} · {new_phone}")
+        filter_city = st.selectbox("Filter by City", ['All'] + list(cities.keys()))
+    
+    # Apply filters
+    filtered_df = df.copy()
+    if filter_blood != 'All':
+        filtered_df = filtered_df[filtered_df['blood_group'] == filter_blood]
+    if filter_city != 'All':
+        filtered_df = filtered_df[filtered_df['city'] == filter_city]
+    
+    st.markdown(f"**{len(filtered_df):,} donors** found")
+    
+    # Display donors in a table-like format
+    display_df = filtered_df[['name', 'blood_group', 'city', 'phone', 'donations', 'available']].head(100)
+    st.dataframe(
+        display_df,
+        column_config={
+            "name": "Name",
+            "blood_group": "Blood Group",
+            "city": "City",
+            "phone": "Phone",
+            "donations": "Donations",
+            "available": "Available"
+        },
+        use_container_width=True,
+        height=400
+    )
+    
+    if len(filtered_df) > 100:
+        st.caption(f"Showing first 100 of {len(filtered_df):,} donors")
+    
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ---- TAB 3 ----
+# ---- TAB 3: REGISTER ----
 with tab3:
+    st.markdown('<div class="card"><h3>Donor Registration</h3>', unsafe_allow_html=True)
+    
+    # Check if registration was successful
+    if st.session_state.registration_success:
+        # Professional Thank You Message
+        st.markdown(f'''
+        <div class="thank-you">
+            <h2>🎉 Thank You, {st.session_state.new_donor_name}!</h2>
+            <p class="sub">You are now registered as a life-saving blood donor!</p>
+            <div class="details">
+                <p><strong>🩸 Blood Group:</strong> {st.session_state.new_donor_details.get('blood', 'N/A')}</p>
+                <p><strong>📍 City:</strong> {st.session_state.new_donor_details.get('city', 'N/A')}</p>
+                <p><strong>📞 Phone:</strong> {st.session_state.new_donor_details.get('phone', 'N/A')}</p>
+                <p><strong>💉 Total Donations:</strong> {st.session_state.new_donor_details.get('donations', 0)}</p>
+            </div>
+            <p style="color: #1A4A2A; font-weight: 600;">You are now part of a network of {len(df):,} donors across India.</p>
+            <p style="color: #1A4A2A; font-size: 0.9rem;">Your registration helps save lives in emergency situations. 🩸❤️</p>
+        </div>
+        ''', unsafe_allow_html=True)
+        
+        if st.button("📝 Register Another Donor", key="register_another"):
+            st.session_state.registration_success = False
+            st.rerun()
+    
+    else:
+        st.markdown("Join the donor network. Takes under a minute.")
+        col1, col2 = st.columns(2)
+        with col1:
+            new_name = st.text_input("Full Name", placeholder="Enter your full name", key="reg_name")
+            new_blood = st.selectbox("Blood Group", ['O+','A+','B+','AB+','O-','A-','B-','AB-'], key="reg_blood")
+            new_city = st.selectbox("City", list(cities.keys()), key="reg_city")
+        with col2:
+            new_phone = st.text_input("Phone Number", placeholder="9XXXXXXXXX", key="reg_phone")
+            new_available = st.selectbox("Availability", ['Yes','No'], key="reg_available")
+            new_donations = st.number_input("Total Past Donations", min_value=0, max_value=50, value=0, key="reg_donations")
+
+        if st.button("✅ Register as Donor"):
+            if not new_name or not new_phone:
+                st.error("Please complete all fields.")
+            elif len(new_phone) < 10:
+                st.error("Please enter a valid 10-digit phone number.")
+            else:
+                lat, lon = cities.get(new_city, (28.6139, 77.2090))
+                lat += np.random.uniform(-0.3, 0.3)
+                lon += np.random.uniform(-0.3, 0.3)
+                new_donor = pd.DataFrame({
+                    'name':[new_name], 'blood_group':[new_blood], 'city':[new_city],
+                    'latitude':[lat], 'longitude':[lon], 'phone':[new_phone],
+                    'available':[new_available], 'donations':[new_donations]
+                })
+                st.session_state.donors_df = pd.concat([st.session_state.donors_df, new_donor], ignore_index=True)
+                df = st.session_state.donors_df
+                
+                # Set session state for thank you message
+                st.session_state.registration_success = True
+                st.session_state.new_donor_name = new_name
+                st.session_state.new_donor_details = {
+                    'blood': new_blood,
+                    'city': new_city,
+                    'phone': new_phone,
+                    'donations': new_donations
+                }
+                st.rerun()
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ---- TAB 4: MAP ----
+with tab4:
     st.markdown('<div class="map-box">', unsafe_allow_html=True)
     map_df = df[['latitude','longitude']].dropna()
     if len(map_df) > 0:
         st.map(map_df, zoom=4)
-        st.caption(f"{len(map_df)} donor locations across India")
+        st.caption(f"📍 {len(map_df):,} donor locations across India")
     else:
         st.warning("No donor location data available.")
     st.markdown('</div>', unsafe_allow_html=True)
@@ -453,17 +661,13 @@ with tab3:
     st.markdown('<div class="section-label" style="margin-top:20px;">Donors by City</div>', unsafe_allow_html=True)
     st.bar_chart(df['city'].value_counts())
 
-    st.markdown('<div class="section-label" style="margin-top:20px;">Available Donors by Blood Group — All India</div>', unsafe_allow_html=True)
-    bg_available = df[df['available'] == 'Yes']['blood_group'].value_counts()
-    st.bar_chart(bg_available)
-
 # ============================================
 # FOOTER
 # ============================================
 
 st.markdown("""
 <div class="footer">
-    <p><span class="brand">RaktConnect</span> — Saving lives through intelligent donor matching</p>
+    <p><span class="brand">🩸 RaktConnect</span> — Saving lives through intelligent donor matching</p>
     <p>Built for CodeStorm 2026: FutureForge</p>
 </div>
 """, unsafe_allow_html=True)
