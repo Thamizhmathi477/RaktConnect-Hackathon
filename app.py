@@ -480,7 +480,7 @@ st.markdown("""
     <h1>🩸 <span>RaktConnect</span></h1>
     <p class="tagline">AI-Powered Emergency Blood &amp; Organ Donor Network</p>
     <div class="badge-container">
-        <span class="badge">🏆 CodeStorm 2026</span>
+        <span class="badge">🏆 Hackathon 2026</span>
         <span class="badge">🤖 AI Matching</span>
         <span class="badge">🩸 10,000+ Donors</span>
         <span class="badge">🌍 India-Wide</span>
