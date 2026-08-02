@@ -1,5 +1,5 @@
 # ============================================
-# 🩸 RAKTCONNECT — Professional Edition v3.3 (PERSISTENT RESULTS + FULL DETAILS)
+# 🩸 RAKTCONNECT — Professional Edition v4.0 (FULLY UPGRADED)
 # CodeStorm 2026 — FutureForge
 # ============================================
 
@@ -13,9 +13,10 @@ import plotly.graph_objects as go
 from datetime import datetime
 import random
 
-# --- Optional: Try importing Folium for map, fallback to st.map ---
+# --- Optional: Folium for map clustering ---
 try:
     import folium
+    from folium.plugins import MarkerCluster
     from streamlit_folium import st_folium
     FOLIUM_AVAILABLE = True
 except ImportError:
@@ -33,293 +34,319 @@ st.set_page_config(
 )
 
 # ============================================
-# PROFESSIONAL CSS
+# SESSION STATE INITIALIZATION
 # ============================================
 
-st.markdown("""
-<style>
-    /* Global Reset */
-    .stApp {
-        background: linear-gradient(135deg, #f5f7fa 0%, #e8edf2 100%);
-    }
-    
-    /* Main Container */
-    .main-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-    
-    /* Header */
-    .header {
-        background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 100%);
-        padding: 30px 40px;
-        border-radius: 20px;
-        margin-bottom: 30px;
-        box-shadow: 0 10px 40px rgba(10, 22, 40, 0.3);
-        border: 1px solid rgba(255,255,255,0.05);
-    }
-    .header h1 {
-        color: #ffffff;
-        font-size: 2.8rem;
-        font-weight: 800;
-        margin: 0;
-        letter-spacing: -0.5px;
-    }
-    .header h1 span {
-        color: #e74c3c;
-        background: rgba(231, 76, 60, 0.15);
-        padding: 0 15px;
-        border-radius: 10px;
-    }
-    .header .tagline {
-        color: #8899bb;
-        font-size: 1.1rem;
-        margin-top: 5px;
-        font-weight: 400;
-        letter-spacing: 0.5px;
-    }
-    .header .badge-container {
-        margin-top: 12px;
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-    .header .badge {
-        background: rgba(255,255,255,0.08);
-        color: #aabbdd;
-        padding: 4px 16px;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        border: 1px solid rgba(255,255,255,0.05);
-    }
-    
-    /* Cards */
-    .card {
-        background: rgba(255,255,255,0.95);
-        backdrop-filter: blur(10px);
-        padding: 25px 30px;
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-        border: 1px solid rgba(255,255,255,0.8);
-        margin-bottom: 20px;
-        transition: all 0.3s ease;
-    }
-    .card:hover {
-        box-shadow: 0 8px 40px rgba(0,0,0,0.08);
-        transform: translateY(-2px);
-    }
-    .card h3 {
-        color: #0a1628;
-        font-size: 1.1rem;
-        font-weight: 700;
-        margin-bottom: 12px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    .card h3 span {
-        font-size: 1.3rem;
-    }
-    
-    /* Stats */
-    .stat-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 15px;
-        margin: 15px 0;
-    }
-    .stat-item {
-        background: rgba(255,255,255,0.8);
-        padding: 18px 20px;
-        border-radius: 14px;
-        text-align: center;
-        border: 1px solid #e8ecf0;
-        transition: all 0.3s ease;
-    }
-    .stat-item:hover {
-        border-color: #e74c3c;
-    }
-    .stat-item .number {
-        font-size: 2.2rem;
-        font-weight: 800;
-        color: #0a1628;
-        line-height: 1.2;
-    }
-    .stat-item .number.red {
-        color: #e74c3c;
-    }
-    .stat-item .number.green {
-        color: #27ae60;
-    }
-    .stat-item .number.blue {
-        color: #3498db;
-    }
-    .stat-item .label {
-        font-size: 0.75rem;
-        color: #8899bb;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-weight: 600;
-        margin-top: 4px;
-    }
-    
-    /* Donor Cards */
-    .donor-card {
-        background: #ffffff;
-        padding: 16px 20px;
-        border-radius: 12px;
-        border: 1px solid #e8ecf0;
-        margin: 8px 0;
-        transition: all 0.3s ease;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .donor-card:hover {
-        border-color: #e74c3c;
-        box-shadow: 0 4px 16px rgba(231, 76, 60, 0.1);
-    }
-    .donor-card .rank {
-        font-size: 1.5rem;
-        font-weight: 800;
-        color: #e74c3c;
-        min-width: 45px;
-    }
-    .donor-card .info {
-        flex: 1;
-        padding: 0 15px;
-    }
-    .donor-card .info .name {
-        font-weight: 700;
-        font-size: 1.05rem;
-        color: #0a1628;
-    }
-    .donor-card .info .details {
-        font-size: 0.85rem;
-        color: #8899bb;
-    }
-    .donor-card .distance {
-        font-size: 1.2rem;
-        font-weight: 800;
-        color: #27ae60;
-        text-align: right;
-    }
-    .donor-card .badge {
-        padding: 2px 12px;
-        border-radius: 12px;
-        font-size: 0.7rem;
-        font-weight: 700;
-        display: inline-block;
-        margin-left: 8px;
-    }
-    .badge-gold { background: #ffd700; color: #0a1628; }
-    .badge-silver { background: #c0c0c0; color: #0a1628; }
-    .badge-bronze { background: #cd7f32; color: white; }
-    .badge-platinum { background: #e5e4e2; color: #0a1628; border: 1px solid #c0a050; }
-    
-    /* Buttons */
-    .stButton button {
-        background: linear-gradient(135deg, #0a1628, #1a2a4a) !important;
-        color: white !important;
-        font-weight: 700 !important;
-        font-size: 0.95rem !important;
-        padding: 12px 30px !important;
-        border: none !important;
-        border-radius: 12px !important;
-        transition: all 0.3s ease !important;
-        width: 100% !important;
-    }
-    .stButton button:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 8px 25px rgba(10, 22, 40, 0.3) !important;
-    }
-    .stButton button:active {
-        transform: translateY(0) !important;
-    }
-    
-    /* Emergency Button */
-    .emergency-btn button {
-        background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
-        animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-        0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
-        70% { box-shadow: 0 0 0 15px rgba(231, 76, 60, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
-    }
-    
-    /* Inputs */
-    .stTextInput input, .stSelectbox select {
-        border-radius: 10px !important;
-        border: 2px solid #e8ecf0 !important;
-        padding: 10px 15px !important;
-        transition: all 0.3s ease !important;
-    }
-    .stTextInput input:focus, .stSelectbox select:focus {
-        border-color: #0a1628 !important;
-        box-shadow: 0 0 0 3px rgba(10, 22, 40, 0.1) !important;
-    }
-    
-    /* Footer */
-    .footer {
-        text-align: center;
-        padding: 25px;
-        background: #0a1628;
-        border-radius: 16px;
-        margin-top: 30px;
-    }
-    .footer p {
-        color: #8899bb;
-        font-size: 0.85rem;
-        margin: 3px 0;
-    }
-    .footer .brand {
-        color: white;
-        font-weight: 700;
-    }
-    .footer .brand span {
-        color: #e74c3c;
-    }
-    
-    /* Sidebar */
-    section[data-testid="stSidebar"] {
-        background: #0a1628 !important;
-        border-right: 1px solid rgba(255,255,255,0.05);
-    }
-    section[data-testid="stSidebar"] * {
-        color: #8899bb !important;
-    }
-    section[data-testid="stSidebar"] h1, 
-    section[data-testid="stSidebar"] h2, 
-    section[data-testid="stSidebar"] h3 {
-        color: #ffffff !important;
-    }
-    
-    /* Tabs */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 4px;
-        border-bottom: 2px solid #e8ecf0;
-    }
-    .stTabs [data-baseweb="tab"] {
-        color: #8899bb !important;
-        font-weight: 600;
-        padding: 10px 20px;
-        border-radius: 10px 10px 0 0;
-    }
-    .stTabs [aria-selected="true"] {
-        color: #0a1628 !important;
-        background: rgba(10, 22, 40, 0.05);
-    }
-    
-    /* Progress Bar */
-    .stProgress > div {
-        background: linear-gradient(90deg, #e74c3c, #f39c12, #27ae60) !important;
-        border-radius: 10px !important;
-    }
-</style>
-""", unsafe_allow_html=True)
+if 'donors_result' not in st.session_state:
+    st.session_state.donors_result = None
+if 'donors_total' not in st.session_state:
+    st.session_state.donors_total = 0
+if 'search_performed' not in st.session_state:
+    st.session_state.search_performed = False
+if 'history' not in st.session_state:
+    st.session_state.history = []
+if 'dark_mode' not in st.session_state:
+    st.session_state.dark_mode = False
+
+# ============================================
+# CUSTOM CSS (with dark mode support)
+# ============================================
+
+def apply_css(dark_mode):
+    if dark_mode:
+        bg_main = "#0e1117"
+        bg_card = "#1e1e1e"
+        border_color = "#333333"
+        text_color = "#fafafa"
+        header_bg = "#1a1a2e"
+        stat_bg = "#1e1e1e"
+        footer_bg = "#1a1a2e"
+        card_hover = "rgba(255,255,255,0.05)"
+    else:
+        bg_main = "#f5f7fa"
+        bg_card = "rgba(255,255,255,0.95)"
+        border_color = "#e8ecf0"
+        text_color = "#0a1628"
+        header_bg = "linear-gradient(135deg, #0a1628 0%, #1a2a4a 100%)"
+        stat_bg = "rgba(255,255,255,0.8)"
+        footer_bg = "#0a1628"
+        card_hover = "rgba(0,0,0,0.02)"
+
+    # CSS string
+    css = f"""
+    <style>
+        .stApp {{
+            background: {bg_main} !important;
+        }}
+        .stApp, .stApp p, .stApp span, .stApp div, .stApp label,
+        .stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp h5 {{
+            color: {text_color} !important;
+        }}
+        .header {{
+            background: {header_bg} !important;
+            padding: 30px 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+        }}
+        .header h1 {{
+            color: #ffffff !important;
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }}
+        .header h1 span {{
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.15);
+            padding: 0 15px;
+            border-radius: 10px;
+        }}
+        .header .tagline {{
+            color: #8899bb !important;
+            font-size: 1.1rem;
+            margin-top: 5px;
+            font-weight: 400;
+        }}
+        .header .badge-container {{
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }}
+        .header .badge {{
+            background: rgba(255,255,255,0.08);
+            color: #aabbdd !important;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.05);
+        }}
+        .card {{
+            background: {bg_card};
+            backdrop-filter: blur(10px);
+            padding: 25px 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            border: 1px solid {border_color};
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }}
+        .card:hover {{
+            box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+            background: {bg_card.replace('0.95','1.0')};
+        }}
+        .card h3 {{
+            color: {text_color};
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }}
+        .card h3 span {{
+            font-size: 1.3rem;
+        }}
+        .stat-item {{
+            background: {stat_bg};
+            padding: 18px 20px;
+            border-radius: 14px;
+            text-align: center;
+            border: 1px solid {border_color};
+            transition: all 0.3s ease;
+        }}
+        .stat-item:hover {{
+            border-color: #e74c3c;
+        }}
+        .stat-item .number {{
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: {text_color};
+            line-height: 1.2;
+        }}
+        .stat-item .number.red {{ color: #e74c3c; }}
+        .stat-item .number.green {{ color: #27ae60; }}
+        .stat-item .number.blue {{ color: #3498db; }}
+        .stat-item .label {{
+            font-size: 0.75rem;
+            color: #8899bb;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-top: 4px;
+        }}
+        .donor-card {{
+            background: {bg_card};
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid {border_color};
+            margin: 8px 0;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }}
+        .donor-card:hover {{
+            border-color: #e74c3c;
+            box-shadow: 0 4px 16px rgba(231, 76, 60, 0.1);
+        }}
+        .donor-card .rank {{
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #e74c3c;
+            min-width: 45px;
+        }}
+        .donor-card .info {{
+            flex: 1;
+            padding: 0 15px;
+        }}
+        .donor-card .info .name {{
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: {text_color};
+        }}
+        .donor-card .info .details {{
+            font-size: 0.85rem;
+            color: #8899bb;
+        }}
+        .donor-card .distance {{
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #27ae60;
+            text-align: right;
+        }}
+        .donor-card .badge {{
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-left: 8px;
+        }}
+        .badge-gold {{ background: #ffd700; color: #0a1628; }}
+        .badge-silver {{ background: #c0c0c0; color: #0a1628; }}
+        .badge-bronze {{ background: #cd7f32; color: white; }}
+        .badge-platinum {{ background: #e5e4e2; color: #0a1628; border: 1px solid #c0a050; }}
+        .stButton button {{
+            background: linear-gradient(135deg, #0a1628, #1a2a4a) !important;
+            color: white !important;
+            font-weight: 700 !important;
+            font-size: 0.95rem !important;
+            padding: 12px 30px !important;
+            border: none !important;
+            border-radius: 12px !important;
+            transition: all 0.3s ease !important;
+            width: 100% !important;
+        }}
+        .stButton button:hover {{
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 25px rgba(10, 22, 40, 0.3) !important;
+        }}
+        .emergency-btn button {{
+            background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+            animation: pulse 2s infinite;
+        }}
+        @keyframes pulse {{
+            0% {{ box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }}
+            70% {{ box-shadow: 0 0 0 15px rgba(231, 76, 60, 0); }}
+            100% {{ box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }}
+        }}
+        .stTextInput input, .stSelectbox select {{
+            border-radius: 10px !important;
+            border: 2px solid {border_color} !important;
+            padding: 10px 15px !important;
+            transition: all 0.3s ease !important;
+            background: {bg_card} !important;
+            color: {text_color} !important;
+        }}
+        .stTextInput input:focus, .stSelectbox select:focus {{
+            border-color: #0a1628 !important;
+            box-shadow: 0 0 0 3px rgba(10, 22, 40, 0.1) !important;
+        }}
+        .footer {{
+            text-align: center;
+            padding: 25px;
+            background: {footer_bg};
+            border-radius: 16px;
+            margin-top: 30px;
+        }}
+        .footer p {{
+            color: #8899bb !important;
+            font-size: 0.85rem;
+            margin: 3px 0;
+        }}
+        .footer .brand {{
+            color: white !important;
+            font-weight: 700;
+        }}
+        .footer .brand span {{
+            color: #e74c3c;
+        }}
+        section[data-testid="stSidebar"] {{
+            background: {bg_card} !important;
+            border-right: 1px solid {border_color};
+        }}
+        section[data-testid="stSidebar"] * {{
+            color: {text_color} !important;
+        }}
+        section[data-testid="stSidebar"] h1, 
+        section[data-testid="stSidebar"] h2, 
+        section[data-testid="stSidebar"] h3 {{
+            color: {text_color} !important;
+        }}
+        .stTabs [data-baseweb="tab-list"] {{
+            gap: 4px;
+            border-bottom: 2px solid {border_color};
+        }}
+        .stTabs [data-baseweb="tab"] {{
+            color: #8899bb !important;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 10px 10px 0 0;
+        }}
+        .stTabs [aria-selected="true"] {{
+            color: {text_color} !important;
+            background: rgba(10, 22, 40, 0.05);
+        }}
+        .stProgress > div {{
+            background: linear-gradient(90deg, #e74c3c, #f39c12, #27ae60) !important;
+            border-radius: 10px !important;
+        }}
+        .map-box {{
+            background: {bg_card};
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid {border_color};
+        }}
+        .how-box {{
+            background: rgba(14, 92, 86, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            border-left: 4px solid #0E5C56;
+        }}
+        .how-box p {{ font-size: 0.9rem; margin: 4px 0; }}
+        .stDataFrame {{
+            background: {bg_card} !important;
+        }}
+        .stDataFrame thead th {{
+            background: {bg_card} !important;
+            color: {text_color} !important;
+        }}
+        .stDataFrame tbody td {{
+            background: {bg_card} !important;
+            color: {text_color} !important;
+        }}
+    </style>
+    """
+    return css
+
+# Apply CSS based on session state
+st.markdown(apply_css(st.session_state.dark_mode), unsafe_allow_html=True)
 
 # ============================================
 # HEADER
@@ -339,7 +366,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ============================================
-# DATA LOADING (FIXED)
+# DATA LOADING
 # ============================================
 
 @st.cache_resource
@@ -367,10 +394,9 @@ def load_data():
                   'Joshi','Rao','Verma','Malhotra','Srinivasan','Menon','Shetty',
                   'Pillai','Naidu','Das','Ganguly','Bose','Mishra','Tripathi']
     
-    # --- FIX: Convert dates to strings first ---
     date_range = pd.date_range('2025-01-01', '2026-07-31')
-    date_strings = [d.strftime('%Y-%m-%d') for d in date_range]  # list of strings
-    random_dates = np.random.choice(date_strings, 10000)         # sample strings
+    date_strings = [d.strftime('%Y-%m-%d') for d in date_range]
+    random_dates = np.random.choice(date_strings, 10000)
     
     donors = []
     for i in range(10000):
@@ -393,7 +419,7 @@ def load_data():
             'donations': np.random.randint(1, 20),
             'age': np.random.randint(18, 65),
             'gender': np.random.choice(['Male', 'Female', 'Other'], p=[0.6, 0.38, 0.02]),
-            'last_donation': random_dates[i]   # now a string
+            'last_donation': random_dates[i]
         })
     
     return pd.DataFrame(donors)
@@ -514,16 +540,34 @@ with st.sidebar:
         st.markdown(f"🏅 {row['name']} — {row['donations']} donations")
     
     st.markdown("---")
-    st.caption("🤖 AI-Powered Matching Engine v3.3")
+    
+    # Dark mode toggle
+    dark_mode = st.toggle("🌙 Dark Mode", value=st.session_state.dark_mode, key="dark_mode_toggle")
+    if dark_mode != st.session_state.dark_mode:
+        st.session_state.dark_mode = dark_mode
+        st.rerun()
+    
+    st.markdown("---")
+    
+    # Search history
+    st.markdown("### 📋 Recent Searches")
+    if st.session_state.history:
+        for entry in st.session_state.history[-5:]:
+            st.caption(f"{entry['timestamp']} — {entry['blood']} in {entry['city']} ({entry['urgency']})")
+    else:
+        st.caption("No searches yet")
+    
+    st.markdown("---")
+    st.caption("🤖 AI-Powered Matching Engine v4.0")
 
 # ============================================
 # TABS
 # ============================================
 
-tab1, tab2, tab3, tab4 = st.tabs(["🔍 Find Donors", "📊 Analytics", "📝 Register", "🗺️ Map"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["🔍 Find Donors", "📊 Analytics", "📝 Register", "🗺️ Map", "📋 Browse All Donors"])
 
 # ============================================
-# TAB 1: FIND DONORS (PERSISTENT RESULTS + FULL DETAILS)
+# TAB 1: FIND DONORS (PERSISTENT RESULTS)
 # ============================================
 
 with tab1:
@@ -587,7 +631,7 @@ with tab1:
         
         st.markdown('</div>', unsafe_allow_html=True)
     
-    # --- Button and result handling ---
+    # Search button
     if st.button("🔍 Find Compatible Donors", use_container_width=True, key="find_donors_btn"):
         lat, lon = cities.get(patient_city, (28.6139, 77.2090))
         
@@ -595,12 +639,20 @@ with tab1:
             time.sleep(0.8)
             donors, total = find_donors(lat, lon, patient_blood, urgency.lower(), request_context)
         
-        # Store results in session state
+        # Store results and log history
         st.session_state.donors_result = donors
         st.session_state.donors_total = total
         st.session_state.search_performed = True
+        
+        # Append to history
+        st.session_state.history.append({
+            'blood': patient_blood,
+            'city': patient_city,
+            'urgency': urgency,
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M')
+        })
     
-    # --- Display results from session state if available ---
+    # Display results from session state
     if st.session_state.get('search_performed', False):
         donors = st.session_state.donors_result
         total = st.session_state.donors_total
@@ -611,7 +663,6 @@ with tab1:
         else:
             st.success(f"✅ {total:,} compatible donors found in {time.strftime('%X')}!")
             
-            # Shortage Meter
             if len(donors) < 3:
                 st.progress(0.2, text="⚠️ CRITICAL SHORTAGE in this area!")
                 st.warning("🚨 Fewer than 3 donors available. Emergency alert sent to hospitals.")
@@ -741,7 +792,6 @@ with tab2:
     
     # Charts
     col1, col2 = st.columns(2)
-    
     with col1:
         st.markdown("#### 🩸 Blood Group Distribution")
         fig = px.bar(
@@ -771,7 +821,6 @@ with tab2:
     st.markdown("---")
     
     col1, col2 = st.columns(2)
-    
     with col1:
         st.markdown("#### 📈 Donation Frequency")
         fig = px.histogram(
@@ -793,6 +842,14 @@ with tab2:
         )
         fig.update_layout(showlegend=True, plot_bgcolor='rgba(0,0,0,0)')
         st.plotly_chart(fig, use_container_width=True)
+    
+    # Leaderboard
+    st.markdown("---")
+    st.markdown("### 🏆 Top 10 Donors")
+    top_donors = df.nlargest(10, 'donations')[['name', 'donations', 'blood_group', 'city']]
+    for i, (_, row) in enumerate(top_donors.iterrows()):
+        badge = get_badge(row['donations'])
+        st.markdown(f"{i+1}. **{row['name']}** — {row['donations']} donations {badge} (🩸 {row['blood_group']}, 📍 {row['city']})")
     
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -894,7 +951,7 @@ with tab3:
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ============================================
-# TAB 4: MAP
+# TAB 4: MAP (WITH CLUSTERING)
 # ============================================
 
 with tab4:
@@ -903,7 +960,7 @@ with tab4:
     st.markdown(f"""
     <div style="background: #f0f2f6; padding: 15px; border-radius: 12px; margin-bottom: 15px;">
         <p style="margin: 0; font-size: 0.9rem; color: #555;">
-            📍 Showing {len(df):,} donor locations across India. Hover over pins for donor details.
+            📍 Showing {len(df):,} donor locations across India. Hover over clusters or pins for details.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -911,6 +968,9 @@ with tab4:
     if FOLIUM_AVAILABLE:
         map_center = [20.5937, 78.9629]
         m = folium.Map(location=map_center, zoom_start=4, tiles='CartoDB positron')
+        
+        # Create marker cluster
+        marker_cluster = MarkerCluster().add_to(m)
         
         # Sample up to 500 donors for performance
         sample_df = df.sample(min(500, len(df)))
@@ -930,12 +990,91 @@ with tab4:
                 color=color,
                 fill=True,
                 fillOpacity=0.7
-            ).add_to(m)
+            ).add_to(marker_cluster)
         
         st_folium(m, width=800, height=500)
+        st.caption(f"📍 {len(df):,} donor locations (clustered view)")
     else:
         st.map(df[['latitude', 'longitude']].dropna(), zoom=4)
-        st.info("💡 For an interactive map, install: `pip install streamlit-folium folium`")
+        st.info("💡 For an interactive clustered map, install: `pip install streamlit-folium folium`")
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ============================================
+# TAB 5: BROWSE ALL DONORS
+# ============================================
+
+with tab5:
+    st.markdown('<div class="card"><h3><span>📋</span> All Registered Donors</h3>', unsafe_allow_html=True)
+    
+    # Total counts
+    st.markdown(f"### 🩸 Total Donors: **{len(df):,}**")
+    st.markdown(f"### ✅ Available Now: **{len(df[df['available'] == 'Yes']):,}**")
+    
+    # Filters
+    col1, col2 = st.columns(2)
+    with col1:
+        filter_blood = st.selectbox(
+            "Filter by Blood Group",
+            ['All'] + sorted(df['blood_group'].unique().tolist()),
+            key="browse_blood"
+        )
+    with col2:
+        filter_city = st.selectbox(
+            "Filter by City",
+            ['All'] + sorted(df['city'].unique().tolist()),
+            key="browse_city"
+        )
+    
+    # Search by name
+    search_name = st.text_input("🔍 Search by Name", placeholder="Type donor name...", key="search_name")
+    
+    # Apply filters
+    filtered_df = df.copy()
+    if filter_blood != 'All':
+        filtered_df = filtered_df[filtered_df['blood_group'] == filter_blood]
+    if filter_city != 'All':
+        filtered_df = filtered_df[filtered_df['city'] == filter_city]
+    if search_name:
+        filtered_df = filtered_df[filtered_df['name'].str.contains(search_name, case=False)]
+    
+    st.markdown(f"**Showing {len(filtered_df):,} donors**")
+    
+    # Rows per page slider
+    rows_to_show = st.slider("Rows to display", min_value=10, max_value=500, value=100, step=10, key="browse_rows")
+    
+    # Display table
+    display_df = filtered_df[['name', 'blood_group', 'city', 'phone', 'donations', 'age', 'gender', 'last_donation', 'available']].head(rows_to_show)
+    
+    st.dataframe(
+        display_df,
+        column_config={
+            "name": "Name",
+            "blood_group": "Blood Group",
+            "city": "City",
+            "phone": "Phone",
+            "donations": "Donations",
+            "age": "Age",
+            "gender": "Gender",
+            "last_donation": "Last Donation",
+            "available": "Available"
+        },
+        use_container_width=True,
+        height=400
+    )
+    
+    if len(filtered_df) > rows_to_show:
+        st.caption(f"Showing first {rows_to_show} of {len(filtered_df):,} donors. Adjust the slider to see more.")
+    
+    # Download CSV
+    csv = filtered_df.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="📥 Download CSV",
+        data=csv,
+        file_name="raktconnect_donors.csv",
+        mime="text/csv",
+        key="download_csv"
+    )
     
     st.markdown('</div>', unsafe_allow_html=True)
 
