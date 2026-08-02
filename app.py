@@ -804,7 +804,7 @@ with tab4:
         st.bar_chart(bg_available)
 
 # ============================================
-# TAB 5: 🤖 AI ASSISTANT (NEW)
+# TAB 5: 🤖 AI ASSISTANT (MODIFIED MODEL)
 # ============================================
 
 with tab5:
@@ -815,7 +815,8 @@ with tab5:
     try:
         api_key = st.secrets["GEMINI_API_KEY"]
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-2.0-flash')
+        # 🔥 CHANGED: Using gemini-1.5-flash instead of 2.0-flash to bypass quota issues
+        model = genai.GenerativeModel('gemini-1.5-flash')
         ai_available = True
     except (KeyError, AttributeError):
         st.error("❌ Gemini API key not found. Please set `GEMINI_API_KEY` in your Streamlit Cloud secrets.")
@@ -853,7 +854,17 @@ with tab5:
                 response = model.generate_content(prompt)
                 st.session_state.ai_chat_history.append({"user": user_question, "ai": response.text})
             except Exception as e:
-                st.error(f"⚠️ AI error: {str(e)}")
+                error_msg = str(e)
+                # Provide a helpful fallback message
+                if "quota" in error_msg.lower() or "rate" in error_msg.lower():
+                    st.error("⚠️ **Quota limit reached.** Don't worry — this is normal for free-tier users.\n\n"
+                             "**Two ways to fix:**\n"
+                             "1. Wait 1-2 minutes and try again (the quota resets quickly).\n"
+                             "2. If it keeps happening, add a billing method to your Google Cloud project "
+                             "(you won't be charged — it just unlocks the free tier properly).\n\n"
+                             "**Try again in a minute!**")
+                else:
+                    st.error(f"⚠️ AI error: {error_msg}")
 
     # Display chat history
     if st.session_state.ai_chat_history:
