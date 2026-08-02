@@ -23,6 +23,10 @@ st.set_page_config(
 if 'dark_mode' not in st.session_state:
     st.session_state.dark_mode = False
 
+# Initialize chat history for AI assistant
+if 'ai_chat_history' not in st.session_state:
+    st.session_state.ai_chat_history = []
+
 # ============================================
 # PREMIUM CSS — Glassmorphism + Gradients + Animations
 # ============================================
@@ -610,13 +614,15 @@ with st.sidebar:
         st.rerun()
 
 # ============================================
-# TABS
+# TABS (now 5)
 # ============================================
 
-tab1, tab2, tab3, tab4 = st.tabs(["🔍 Find Donors", "📋 Browse Directory", "📝 Register", "🗺️ Map"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
+    ["🔍 Find Donors", "📋 Browse Directory", "📝 Register", "🗺️ Map", "🤖 AI Assistant"]
+)
 
 # ============================================
-# TAB 1: FIND DONORS
+# TAB 1: FIND DONORS (unchanged)
 # ============================================
 
 with tab1:
@@ -686,7 +692,7 @@ with tab1:
             """, unsafe_allow_html=True)
 
 # ============================================
-# TAB 2: BROWSE DIRECTORY
+# TAB 2: BROWSE DIRECTORY (unchanged)
 # ============================================
 
 with tab2:
@@ -726,7 +732,7 @@ with tab2:
         st.download_button("📥 Download CSV", data=csv, file_name="raktconnect_donors.csv", mime="text/csv", key="download_csv")
 
 # ============================================
-# TAB 3: REGISTER
+# TAB 3: REGISTER (unchanged)
 # ============================================
 
 with tab3:
@@ -776,7 +782,7 @@ with tab3:
         st.markdown('</div>', unsafe_allow_html=True)
 
 # ============================================
-# TAB 4: MAP
+# TAB 4: MAP (unchanged)
 # ============================================
 
 with tab4:
@@ -796,6 +802,76 @@ with tab4:
         st.markdown('<div style="margin-top:1.5rem;"><div style="font-size:0.7rem; opacity:0.6; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem;">Available Donors by Blood Group</div></div>', unsafe_allow_html=True)
         bg_available = df[df['available'] == 'Yes']['blood_group'].value_counts()
         st.bar_chart(bg_available)
+
+# ============================================
+# TAB 5: 🤖 AI ASSISTANT (NEW)
+# ============================================
+
+with tab5:
+    st.markdown('<div class="card"><h3>🤖 AI Blood Donation Assistant</h3>', unsafe_allow_html=True)
+    st.markdown("Ask anything about blood donation, compatibility, emergency procedures, or general health advice.")
+
+    # Check if API key is set
+    try:
+        api_key = st.secrets["GEMINI_API_KEY"]
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel('gemini-2.0-flash')
+        ai_available = True
+    except (KeyError, AttributeError):
+        st.error("❌ Gemini API key not found. Please set `GEMINI_API_KEY` in your Streamlit Cloud secrets.")
+        ai_available = False
+
+    # Chat input
+    user_question = st.text_input("Your question:", placeholder="e.g., Can O+ donate to AB-?",
+                                  key="ai_question", disabled=not ai_available)
+
+    col_ask, col_clear = st.columns([3, 1])
+    with col_ask:
+        ask_button = st.button("💬 Ask Gemini", use_container_width=True, disabled=not ai_available)
+    with col_clear:
+        clear_button = st.button("🗑️ Clear History", use_container_width=True, disabled=not ai_available)
+
+    if clear_button:
+        st.session_state.ai_chat_history = []
+        st.rerun()
+
+    if ask_button and user_question and ai_available:
+        # Build a context-aware prompt
+        prompt = f"""
+        You are RaktConnect's AI blood donation expert. Answer the user's question clearly and helpfully.
+        Keep responses concise (2-3 paragraphs) but informative.
+
+        User question: {user_question}
+
+        If the question is about blood compatibility, provide accurate medical information.
+        If it's about emergency procedures, guide them to call emergency services immediately.
+        If unsure, recommend checking with a medical professional.
+        """
+
+        with st.spinner("🧠 Thinking..."):
+            try:
+                response = model.generate_content(prompt)
+                st.session_state.ai_chat_history.append({"user": user_question, "ai": response.text})
+            except Exception as e:
+                st.error(f"⚠️ AI error: {str(e)}")
+
+    # Display chat history
+    if st.session_state.ai_chat_history:
+        for entry in st.session_state.ai_chat_history:
+            st.markdown(f"""
+            <div style="background: rgba(255,255,255,0.05); padding: 12px 16px; border-radius: 12px; margin: 8px 0; border-left: 4px solid #ff6b6b;">
+                <strong style="color: #ff6b6b;">You:</strong> {entry['user']}
+            </div>
+            <div style="background: rgba(255,255,255,0.02); padding: 12px 16px; border-radius: 12px; margin: 8px 0 16px 0; border-left: 4px solid #48cae4;">
+                <strong style="color: #48cae4;">🤖 AI:</strong><br>{entry['ai']}
+            </div>
+            """, unsafe_allow_html=True)
+    else:
+        st.info("💡 Your conversation with the AI will appear here. Ask a question above!")
+
+    st.caption("⚠️ For medical emergencies, always call 108 or visit your nearest hospital.")
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # ============================================
 # FOOTER
