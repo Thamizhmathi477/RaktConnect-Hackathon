@@ -807,19 +807,23 @@ with tab4:
 # TAB 5: 🤖 AI ASSISTANT (MODIFIED MODEL)
 # ============================================
 
+
+                # ============================================
+# TAB 5: 🤖 AI ASSISTANT (Powered by Groq)
+# ============================================
+
 with tab5:
     st.markdown('<div class="card"><h3>🤖 AI Blood Donation Assistant</h3>', unsafe_allow_html=True)
     st.markdown("Ask anything about blood donation, compatibility, emergency procedures, or general health advice.")
 
-    # Check if API key is set
+    # Check if the Groq API key is set
     try:
-        api_key = st.secrets["GEMINI_API_KEY"]
-        genai.configure(api_key=api_key)
-        # 🔥 CHANGED: Using gemini-1.5-flash instead of 2.0-flash to bypass quota issues
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        from groq import Groq
+        api_key = st.secrets["GROQ_API_KEY"]
+        client = Groq(api_key=api_key)
         ai_available = True
-    except (KeyError, AttributeError):
-        st.error("❌ Gemini API key not found. Please set `GEMINI_API_KEY` in your Streamlit Cloud secrets.")
+    except (KeyError, ImportError):
+        st.error("❌ Groq API key not found. Please set `GROQ_API_KEY` in your Streamlit Cloud secrets.")
         ai_available = False
 
     # Chat input
@@ -828,7 +832,7 @@ with tab5:
 
     col_ask, col_clear = st.columns([3, 1])
     with col_ask:
-        ask_button = st.button("💬 Ask Gemini", use_container_width=True, disabled=not ai_available)
+        ask_button = st.button("💬 Ask Groq AI", use_container_width=True, disabled=not ai_available)
     with col_clear:
         clear_button = st.button("🗑️ Clear History", use_container_width=True, disabled=not ai_available)
 
@@ -838,33 +842,24 @@ with tab5:
 
     if ask_button and user_question and ai_available:
         # Build a context-aware prompt
-        prompt = f"""
-        You are RaktConnect's AI blood donation expert. Answer the user's question clearly and helpfully.
-        Keep responses concise (2-3 paragraphs) but informative.
-
-        User question: {user_question}
-
-        If the question is about blood compatibility, provide accurate medical information.
-        If it's about emergency procedures, guide them to call emergency services immediately.
-        If unsure, recommend checking with a medical professional.
-        """
+        system_prompt = "You are RaktConnect's AI blood donation expert. Answer the user's question clearly and helpfully. Keep responses concise (2-3 paragraphs) but informative. If the question is about blood compatibility, provide accurate medical information. If it's about emergency procedures, guide them to call emergency services immediately. If unsure, recommend checking with a medical professional."
 
         with st.spinner("🧠 Thinking..."):
             try:
-                response = model.generate_content(prompt)
-                st.session_state.ai_chat_history.append({"user": user_question, "ai": response.text})
+                # Make the API call to Groq
+                chat_completion = client.chat.completions.create(
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_question}
+                    ],
+                    # You can choose from various fast, free models:
+                    # "llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"
+                    model="llama-3.1-8b-instant", # This is a great, fast, and free model[reference:7]
+                )
+                response_text = chat_completion.choices[0].message.content
+                st.session_state.ai_chat_history.append({"user": user_question, "ai": response_text})
             except Exception as e:
-                error_msg = str(e)
-                # Provide a helpful fallback message
-                if "quota" in error_msg.lower() or "rate" in error_msg.lower():
-                    st.error("⚠️ **Quota limit reached.** Don't worry — this is normal for free-tier users.\n\n"
-                             "**Two ways to fix:**\n"
-                             "1. Wait 1-2 minutes and try again (the quota resets quickly).\n"
-                             "2. If it keeps happening, add a billing method to your Google Cloud project "
-                             "(you won't be charged — it just unlocks the free tier properly).\n\n"
-                             "**Try again in a minute!**")
-                else:
-                    st.error(f"⚠️ AI error: {error_msg}")
+                st.error(f"⚠️ AI error: {str(e)}")
 
     # Display chat history
     if st.session_state.ai_chat_history:
@@ -883,7 +878,6 @@ with tab5:
     st.caption("⚠️ For medical emergencies, always call 108 or visit your nearest hospital.")
 
     st.markdown('</div>', unsafe_allow_html=True)
-
 # ============================================
 # FOOTER
 # ============================================
