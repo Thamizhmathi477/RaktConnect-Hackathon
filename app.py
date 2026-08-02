@@ -1,5 +1,5 @@
 # ============================================
-# 🩸 RAKTCONNECT — Professional Edition v3.0
+# 🩸 RAKTCONNECT — Professional Edition v3.1 (FIXED)
 # CodeStorm 2026 — FutureForge
 # ============================================
 
@@ -12,6 +12,14 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime
 import random
+
+# --- Optional: Try importing Folium for map, fallback to st.map ---
+try:
+    import folium
+    from streamlit_folium import st_folium
+    FOLIUM_AVAILABLE = True
+except ImportError:
+    FOLIUM_AVAILABLE = False
 
 # ============================================
 # PAGE CONFIGURATION
@@ -380,7 +388,7 @@ def load_data():
             'donations': np.random.randint(1, 20),
             'age': np.random.randint(18, 65),
             'gender': np.random.choice(['Male', 'Female', 'Other'], p=[0.6, 0.38, 0.02]),
-            'last_donation': np.random.choice(pd.date_range('2025-01-01', '2026-07-31'), 10000)
+            'last_donation': np.random.choice(pd.date_range('2025-01-01', '2026-07-31'), 10000).strftime('%Y-%m-%d')
         })
     
     return pd.DataFrame(donors)
@@ -501,7 +509,7 @@ with st.sidebar:
         st.markdown(f"🏅 {row['name']} — {row['donations']} donations")
     
     st.markdown("---")
-    st.caption("🤖 AI-Powered Matching Engine v3.0")
+    st.caption("🤖 AI-Powered Matching Engine v3.1")
 
 # ============================================
 # TABS
@@ -529,14 +537,27 @@ with tab1:
             <h3><span>👤</span> Patient Details</h3>
         """, unsafe_allow_html=True)
         
-        patient_name = st.text_input("Full Name", "Rajesh Kumar")
-        patient_blood = st.selectbox("Blood Group", ['O+', 'A+', 'B+', 'AB+', 'O-', 'A-', 'B-', 'AB-'])
-        patient_city = st.selectbox("City", list(cities.keys()))
-        urgency = st.selectbox("Urgency Level", ['Normal', 'Urgent', 'Critical'])
+        patient_name = st.text_input("Full Name", "Rajesh Kumar", key="patient_name")
+        patient_blood = st.selectbox(
+            "Blood Group",
+            ['O+', 'A+', 'B+', 'AB+', 'O-', 'A-', 'B-', 'AB-'],
+            key="patient_blood"
+        )
+        patient_city = st.selectbox(
+            "City",
+            list(cities.keys()),
+            key="patient_city"
+        )
+        urgency = st.selectbox(
+            "Urgency Level",
+            ['Normal', 'Urgent', 'Critical'],
+            key="urgency"
+        )
         request_context = st.text_area(
             "Additional Context (Optional)",
             placeholder="e.g., Patient is bleeding, emergency surgery needed, accident victim...",
-            height=80
+            height=80,
+            key="request_context"
         )
         st.markdown('</div>', unsafe_allow_html=True)
     
@@ -561,7 +582,7 @@ with tab1:
         
         st.markdown('</div>', unsafe_allow_html=True)
     
-    if st.button("🔍 Find Compatible Donors", use_container_width=True):
+    if st.button("🔍 Find Compatible Donors", use_container_width=True, key="find_donors_btn"):
         lat, lon = cities.get(patient_city, (28.6139, 77.2090))
         
         with st.spinner("🤖 Analyzing donor network..."):
@@ -572,7 +593,6 @@ with tab1:
             st.error("❌ No compatible donors found in the network.")
             st.warning("🚨 Emergency alert: Escalating to hospital blood bank network...")
         else:
-            # Success message with stats
             st.success(f"✅ {total:,} compatible donors found in {time.strftime('%X')}!")
             
             # Shortage Meter
@@ -775,18 +795,34 @@ with tab3:
     col1, col2 = st.columns(2)
     
     with col1:
-        new_name = st.text_input("Full Name", placeholder="Enter your full name")
-        new_blood = st.selectbox("Blood Group", ['O+', 'A+', 'B+', 'AB+', 'O-', 'A-', 'B-', 'AB-'])
-        new_city = st.selectbox("City", list(cities.keys()))
-        new_gender = st.selectbox("Gender", ['Male', 'Female', 'Other'])
+        new_name = st.text_input("Full Name", placeholder="Enter your full name", key="reg_name")
+        new_blood = st.selectbox(
+            "Blood Group",
+            ['O+', 'A+', 'B+', 'AB+', 'O-', 'A-', 'B-', 'AB-'],
+            key="donor_blood"
+        )
+        new_city = st.selectbox(
+            "City",
+            list(cities.keys()),
+            key="donor_city"
+        )
+        new_gender = st.selectbox(
+            "Gender",
+            ['Male', 'Female', 'Other'],
+            key="donor_gender"
+        )
     
     with col2:
-        new_phone = st.text_input("Phone Number", placeholder="9XXXXXXXXX")
-        new_available = st.selectbox("Availability", ['Yes', 'No'])
-        new_age = st.number_input("Age", min_value=18, max_value=65, value=25)
-        new_donations = st.number_input("Total Past Donations", min_value=0, max_value=50, value=0)
+        new_phone = st.text_input("Phone Number", placeholder="9XXXXXXXXX", key="reg_phone")
+        new_available = st.selectbox(
+            "Availability",
+            ['Yes', 'No'],
+            key="donor_available"
+        )
+        new_age = st.number_input("Age", min_value=18, max_value=65, value=25, key="reg_age")
+        new_donations = st.number_input("Total Past Donations", min_value=0, max_value=50, value=0, key="reg_donations")
     
-    if st.button("✅ Register as Donor", use_container_width=True):
+    if st.button("✅ Register as Donor", use_container_width=True, key="register_btn"):
         if not new_name or not new_phone:
             st.error("❌ Please complete all required fields.")
         elif len(new_phone) < 10:
@@ -813,6 +849,7 @@ with tab3:
             if 'donors_df' not in st.session_state:
                 st.session_state.donors_df = df
             st.session_state.donors_df = pd.concat([st.session_state.donors_df, new_donor], ignore_index=True)
+            # Update the main df reference
             df = st.session_state.donors_df
             
             st.balloons()
@@ -841,24 +878,21 @@ with tab3:
 with tab4:
     st.markdown('<div class="card"><h3><span>🗺️</span> Donor Location Map</h3>', unsafe_allow_html=True)
     
-    st.markdown("""
+    st.markdown(f"""
     <div style="background: #f0f2f6; padding: 15px; border-radius: 12px; margin-bottom: 15px;">
         <p style="margin: 0; font-size: 0.9rem; color: #555;">
-            📍 Showing {:,} donor locations across India. Hover over pins for donor details.
+            📍 Showing {len(df):,} donor locations across India. Hover over pins for donor details.
         </p>
     </div>
-    """.format(len(df)), unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
     
-    # Use Folium if available, else fallback
-    try:
-        import folium
-        from streamlit_folium import st_folium
-        
+    if FOLIUM_AVAILABLE:
         map_center = [20.5937, 78.9629]
         m = folium.Map(location=map_center, zoom_start=4, tiles='CartoDB positron')
         
-        # Add donor markers
-        for _, row in df.sample(min(500, len(df))).iterrows():
+        # Sample up to 500 donors for performance
+        sample_df = df.sample(min(500, len(df)))
+        for _, row in sample_df.iterrows():
             color = 'red' if row['blood_group'] in ['O+', 'O-'] else 'blue' if row['blood_group'] in ['A+', 'A-'] else 'green'
             popup_text = f"""
             <b>{row['name']}</b><br>
@@ -877,8 +911,7 @@ with tab4:
             ).add_to(m)
         
         st_folium(m, width=800, height=500)
-        
-    except ImportError:
+    else:
         st.map(df[['latitude', 'longitude']].dropna(), zoom=4)
         st.info("💡 For an interactive map, install: `pip install streamlit-folium folium`")
     
