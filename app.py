@@ -1,5 +1,5 @@
 # ============================================
-# 🩸 RAKTCONNECT — Professional Edition v3.3 (FULLY FIXED)
+# 🩸 RAKTCONNECT — Professional Edition v3.3 (PERSISTENT RESULTS + FULL DETAILS)
 # CodeStorm 2026 — FutureForge
 # ============================================
 
@@ -523,11 +523,7 @@ with st.sidebar:
 tab1, tab2, tab3, tab4 = st.tabs(["🔍 Find Donors", "📊 Analytics", "📝 Register", "🗺️ Map"])
 
 # ============================================
-# TAB 1: FIND DONORS
-# ============================================
-
-# ============================================
-# TAB 1: FIND DONORS (FIXED — PERSISTENT RESULTS)
+# TAB 1: FIND DONORS (PERSISTENT RESULTS + FULL DETAILS)
 # ============================================
 
 with tab1:
@@ -633,7 +629,6 @@ with tab1:
                 badge_html = get_badge(donor['donations'])
                 wa_link = f"https://wa.me/91{donor['phone']}?text=Hi%20{donor['name'].split()[0]}%2C%20I%20need%20emergency%20blood%20donation."
                 
-                # --- SHOW FULL DONOR DETAILS ---
                 st.markdown(f"""
                 <div class="donor-card" style="border-left: 4px solid {colors[i]};">
                     <div style="display: flex; align-items: center; gap: 15px; width: 100%; flex-wrap: wrap;">
@@ -704,6 +699,7 @@ with tab1:
             """, unsafe_allow_html=True)
             
             st.success("📱 Notification sent to donor! ✅")
+
 # ============================================
 # TAB 2: ANALYTICS
 # ============================================
