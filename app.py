@@ -2,7 +2,7 @@
 # RaktConnect — Premium Edition
 # CodeStorm 2026 — FutureForge
 # ============================================
-
+import google.generativeai as genai
 import streamlit as st
 import pandas as pd
 import numpy as np
