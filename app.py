@@ -526,6 +526,10 @@ tab1, tab2, tab3, tab4 = st.tabs(["🔍 Find Donors", "📊 Analytics", "📝 Re
 # TAB 1: FIND DONORS
 # ============================================
 
+# ============================================
+# TAB 1: FIND DONORS (FIXED — PERSISTENT RESULTS)
+# ============================================
+
 with tab1:
     # Emergency Button
     col1, col2, col3 = st.columns([1, 2, 1])
@@ -587,12 +591,23 @@ with tab1:
         
         st.markdown('</div>', unsafe_allow_html=True)
     
+    # --- Button and result handling ---
     if st.button("🔍 Find Compatible Donors", use_container_width=True, key="find_donors_btn"):
         lat, lon = cities.get(patient_city, (28.6139, 77.2090))
         
         with st.spinner("🤖 Analyzing donor network..."):
             time.sleep(0.8)
             donors, total = find_donors(lat, lon, patient_blood, urgency.lower(), request_context)
+        
+        # Store results in session state
+        st.session_state.donors_result = donors
+        st.session_state.donors_total = total
+        st.session_state.search_performed = True
+    
+    # --- Display results from session state if available ---
+    if st.session_state.get('search_performed', False):
+        donors = st.session_state.donors_result
+        total = st.session_state.donors_total
         
         if donors is None:
             st.error("❌ No compatible donors found in the network.")
@@ -618,20 +633,24 @@ with tab1:
                 badge_html = get_badge(donor['donations'])
                 wa_link = f"https://wa.me/91{donor['phone']}?text=Hi%20{donor['name'].split()[0]}%2C%20I%20need%20emergency%20blood%20donation."
                 
+                # --- SHOW FULL DONOR DETAILS ---
                 st.markdown(f"""
                 <div class="donor-card" style="border-left: 4px solid {colors[i]};">
-                    <div style="display: flex; align-items: center; gap: 15px; width: 100%;">
+                    <div style="display: flex; align-items: center; gap: 15px; width: 100%; flex-wrap: wrap;">
                         <div class="rank" style="color: {colors[i]};">{emojis[i]}</div>
-                        <div class="info">
+                        <div class="info" style="flex: 1;">
                             <div class="name">{donor['name']} {badge_html}</div>
                             <div class="details">
-                                🩸 {donor['blood_group']} · 📍 {donor['city']} · 📞 {donor['phone']} · 💉 {donor['donations']} donations
+                                🩸 <strong>{donor['blood_group']}</strong> · 📍 {donor['city']} · 📞 {donor['phone']} · 💉 {donor['donations']} donations
+                            </div>
+                            <div class="details" style="font-size: 0.8rem; color: #555;">
+                                🎂 Age: {donor.get('age', 'N/A')} · ⚤ {donor.get('gender', 'N/A')} · 📅 Last Donation: {donor.get('last_donation', 'N/A')}
                             </div>
                             <a href="{wa_link}" target="_blank" style="color: #25D366; text-decoration: none; font-weight: 600; font-size: 0.85rem;">
                                 💬 Contact on WhatsApp
                             </a>
                         </div>
-                        <div class="distance">
+                        <div class="distance" style="text-align: right;">
                             {donor['distance_km']:.1f} km
                             <div style="font-size: 0.7rem; color: #8899bb; font-weight: 400;">
                                 Priority: {donor['priority_score']:.2f}
@@ -661,6 +680,9 @@ with tab1:
                         <div style="color: #555; font-size: 0.9rem;">
                             📍 {best['distance_km']:.1f} km away · ⏱️ ~{best['distance_km'] / 30 * 60:.0f} min
                         </div>
+                        <div style="color: #555; font-size: 0.85rem; margin-top: 4px;">
+                            🎂 Age: {best.get('age', 'N/A')} · ⚤ {best.get('gender', 'N/A')} · 📅 Last Donation: {best.get('last_donation', 'N/A')}
+                        </div>
                     </div>
                     <div>
                         <a href="{wa_link}" target="_blank" style="
@@ -682,7 +704,6 @@ with tab1:
             """, unsafe_allow_html=True)
             
             st.success("📱 Notification sent to donor! ✅")
-
 # ============================================
 # TAB 2: ANALYTICS
 # ============================================
