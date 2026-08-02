@@ -1,5 +1,5 @@
 # ============================================
-# 🩸 RAKTCONNECT — Professional Edition v3.2 (FULLY FIXED)
+# 🩸 RAKTCONNECT — Professional Edition v3.3 (FULLY FIXED)
 # CodeStorm 2026 — FutureForge
 # ============================================
 
@@ -339,7 +339,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ============================================
-# DATA LOADING
+# DATA LOADING (FIXED)
 # ============================================
 
 @st.cache_resource
@@ -367,10 +367,10 @@ def load_data():
                   'Joshi','Rao','Verma','Malhotra','Srinivasan','Menon','Shetty',
                   'Pillai','Naidu','Das','Ganguly','Bose','Mishra','Tripathi']
     
-    # Pre-generate random dates for efficiency
+    # --- FIX: Convert dates to strings first ---
     date_range = pd.date_range('2025-01-01', '2026-07-31')
-    random_dates = np.random.choice(date_range, 10000)
-    last_donation_strings = [d.strftime('%Y-%m-%d') for d in random_dates]
+    date_strings = [d.strftime('%Y-%m-%d') for d in date_range]  # list of strings
+    random_dates = np.random.choice(date_strings, 10000)         # sample strings
     
     donors = []
     for i in range(10000):
@@ -393,7 +393,7 @@ def load_data():
             'donations': np.random.randint(1, 20),
             'age': np.random.randint(18, 65),
             'gender': np.random.choice(['Male', 'Female', 'Other'], p=[0.6, 0.38, 0.02]),
-            'last_donation': last_donation_strings[i]
+            'last_donation': random_dates[i]   # now a string
         })
     
     return pd.DataFrame(donors)
@@ -514,7 +514,7 @@ with st.sidebar:
         st.markdown(f"🏅 {row['name']} — {row['donations']} donations")
     
     st.markdown("---")
-    st.caption("🤖 AI-Powered Matching Engine v3.2")
+    st.caption("🤖 AI-Powered Matching Engine v3.3")
 
 # ============================================
 # TABS
